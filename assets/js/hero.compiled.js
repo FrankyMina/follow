@@ -243,11 +243,11 @@ function HeroChat(_ref2) {
     className: "hero-copy"
   }, /*#__PURE__*/React.createElement("p", {
     className: "eyebrow hero-eyebrow"
-  }, "\u2014 Seguimiento autom\xE1tico \xB7 Sin c\xF3digo"), /*#__PURE__*/React.createElement("h1", {
+  }, "\u2014 WhatsApp · Automático · Cualquier negocio"), /*#__PURE__*/React.createElement("h1", {
     className: "hero-title"
   }, "Tus citas, confirmadas. Tus clientes, ", /*#__PURE__*/React.createElement("em", null, "de regreso"), "."), /*#__PURE__*/React.createElement("p", {
     className: "hero-sub"
-  }, "Follow es el agente que confirma, recuerda y reagenda \u2014 por WhatsApp, SMS y email \u2014 para que ning\xFAn negocio o profesional pierda otra cita por falta de seguimiento."), /*#__PURE__*/React.createElement("div", {
+  }, "Sube tu lista de clientes. Follow confirma, recuerda y reagenda por WhatsApp — automático, desde $399 al mes. Para médicos, coaches, abogados, estéticas y cualquier negocio que trabaja con citas."), /*#__PURE__*/React.createElement("div", {
     className: "hero-ctas"
   }, /*#__PURE__*/React.createElement("a", {
     href: "#empezar",
@@ -320,7 +320,7 @@ function HeroStats(_ref3) {
     className: "hero-title"
   }, "Mide en pesos lo que tu agenda ", /*#__PURE__*/React.createElement("em", null, "recupera"), "."), /*#__PURE__*/React.createElement("p", {
     className: "hero-sub"
-  }, "Follow no solo manda recordatorios \u2014 convierte cada cita salvada en una l\xEDnea de ingreso que puedes ver. WhatsApp, SMS y email automatizados, con tablero en tiempo real."), /*#__PURE__*/React.createElement("div", {
+  }, "Follow no solo manda recordatorios \u2014 convierte cada cita salvada en una l\xEDnea de ingreso que puedes ver. WhatsApp & Email automatizados, con tablero en tiempo real."), /*#__PURE__*/React.createElement("div", {
     className: "hero-ctas"
   }, /*#__PURE__*/React.createElement("a", {
     href: "#empezar",
@@ -344,7 +344,7 @@ function HeroStats(_ref3) {
     className: "trust-num"
   }, /*#__PURE__*/React.createElement("em", null, "3"), " canales"), /*#__PURE__*/React.createElement("span", {
     className: "trust-label"
-  }, "WhatsApp \xB7 SMS \xB7 Email")), /*#__PURE__*/React.createElement("div", {
+  }, "WhatsApp & Email")), /*#__PURE__*/React.createElement("div", {
     className: "trust-item"
   }, /*#__PURE__*/React.createElement("span", {
     className: "trust-num"
@@ -434,7 +434,7 @@ function HeroType(_ref4) {
       fontSize: '20px',
       maxWidth: '720px'
     }
-  }, "Follow es el agente de seguimiento autom\xE1tico para m\xE9dicos, dentistas, abogados y profesionales independientes. Confirma, recuerda y reagenda \u2014 por WhatsApp, SMS y email \u2014 sin que muevas un dedo."), /*#__PURE__*/React.createElement("div", {
+  }, "Follow es el agente de seguimiento autom\xE1tico para m\xE9dicos, dentistas, abogados y profesionales independientes. Confirma, recuerda y reagenda \u2014 por WhatsApp & Email \u2014 sin que muevas un dedo."), /*#__PURE__*/React.createElement("div", {
     className: "hero-ctas"
   }, /*#__PURE__*/React.createElement("a", {
     href: "#empezar",
@@ -458,7 +458,7 @@ function HeroType(_ref4) {
     className: "lbl"
   }, "Canales"), /*#__PURE__*/React.createElement("span", {
     className: "val"
-  }, /*#__PURE__*/React.createElement("em", null, "WhatsApp"), ", SMS, Email"), /*#__PURE__*/React.createElement("p", null, "El cliente recibe el mensaje donde ya est\xE1.")), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("em", null, "WhatsApp"), " & Email"), /*#__PURE__*/React.createElement("p", null, "El cliente recibe el mensaje donde ya est\xE1.")), /*#__PURE__*/React.createElement("div", {
     className: "item"
   }, /*#__PURE__*/React.createElement("span", {
     className: "lbl"

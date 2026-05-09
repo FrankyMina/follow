@@ -158,12 +158,12 @@ function HeroChat({ tweaks }) {
     <section className="hero variant-a">
       <div className="hero-grid">
         <div className="hero-copy">
-          <p className="eyebrow hero-eyebrow">— Seguimiento automático · Sin código</p>
+          <p className="eyebrow hero-eyebrow">— WhatsApp · Automático · Cualquier negocio</p>
           <h1 className="hero-title">
             Tus citas, confirmadas. Tus clientes, <em>de regreso</em>.
           </h1>
           <p className="hero-sub">
-            Follow es el agente que confirma, recuerda y reagenda — por WhatsApp, SMS y email — para que ningún negocio o profesional pierda otra cita por falta de seguimiento.
+            Sube tu lista de clientes. Follow confirma, recuerda y reagenda por WhatsApp — automático, desde $399 al mes. Para médicos, coaches, abogados, estéticas y cualquier negocio que trabaja con citas.
           </p>
           <div className="hero-ctas">
             <a href="#empezar" className="btn btn-primary">Empezar prueba 14 días <span className="arrow">→</span></a>
@@ -229,7 +229,7 @@ function HeroStats({ tweaks }) {
             Mide en pesos lo que tu agenda <em>recupera</em>.
           </h1>
           <p className="hero-sub">
-            Follow no solo manda recordatorios — convierte cada cita salvada en una línea de ingreso que puedes ver. WhatsApp, SMS y email automatizados, con tablero en tiempo real.
+            Follow no solo manda recordatorios — convierte cada cita salvada en una línea de ingreso que puedes ver. WhatsApp & Email automatizados, con tablero en tiempo real.
           </p>
           <div className="hero-ctas">
             <a href="#empezar" className="btn btn-primary">Empezar prueba 14 días <span className="arrow">→</span></a>
@@ -242,7 +242,7 @@ function HeroStats({ tweaks }) {
             </div>
             <div className="trust-item">
               <span className="trust-num"><em>3</em> canales</span>
-              <span className="trust-label">WhatsApp · SMS · Email</span>
+              <span className="trust-label">WhatsApp & Email</span>
             </div>
             <div className="trust-item">
               <span className="trust-num">14 <em>días</em></span>
@@ -315,7 +315,7 @@ function HeroType({ tweaks }) {
             Nadie debería perder una cita por falta de un <em>mensaje</em>.
           </h1>
           <p className="hero-sub" style={{ fontSize: '20px', maxWidth: '720px' }}>
-            Follow es el agente de seguimiento automático para médicos, dentistas, abogados y profesionales independientes. Confirma, recuerda y reagenda — por WhatsApp, SMS y email — sin que muevas un dedo.
+            Follow es el agente de seguimiento automático para médicos, dentistas, abogados y profesionales independientes. Confirma, recuerda y reagenda — por WhatsApp & Email — sin que muevas un dedo.
           </p>
           <div className="hero-ctas">
             <a href="#empezar" className="btn btn-primary">Empezar prueba 14 días <span className="arrow">→</span></a>
