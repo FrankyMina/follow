@@ -1,0 +1,4 @@
+nombre,telefono,email,fecha_cita,hora_cita,servicio
+Ana García,+5215512345678,ana@gmail.com,2025-06-15,10:00,Consulta
+Carlos López,+5215598765432,carlos@gmail.com,2025-06-16,11:30,Revisión
+María Torres,+5215511223344,,2025-06-17,09:00,Sesión

@@ -28,8 +28,13 @@
   --fg:        #14130f;
   --ink-2:     #3a3833;
   --muted:     #6b6860;
+  --muted-2:   #9b9890;
   --gold:      #b8923a;
   --gold-soft: rgba(184,146,58,0.10);
+  --green:     #3f9c64;
+  --green-soft: rgba(63,156,100,0.10);
+  --red:       #c0524f;
+  --red-soft:  rgba(192,82,79,0.08);
   --divider:   rgba(20,19,15,0.08);
   --divider-strong: rgba(20,19,15,0.16);
 }
@@ -44,149 +49,243 @@ html, body {
 
 body::before {
   content: '';
-  position: fixed;
-  inset: 0;
+  position: fixed; inset: 0;
   pointer-events: none;
   background: radial-gradient(circle at 1px 1px, rgba(20,19,15,0.025) 1px, transparent 0);
   background-size: 22px 22px;
-  z-index: 0;
-  opacity: 0.5;
+  z-index: 0; opacity: 0.5;
 }
 
+/* ── Nav ── */
 nav {
-  position: relative;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 48px;
+  position: sticky; top: 0;
+  z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 48px;
   border-bottom: 1px solid var(--divider);
-  background: rgba(251,250,247,0.9);
+  background: rgba(251,250,247,0.92);
   backdrop-filter: blur(10px);
 }
-
-.brand {
-  font-family: 'Playfair Display', serif;
-  font-size: 20px;
-  letter-spacing: -0.02em;
-}
+.brand { font-family: 'Playfair Display', serif; font-size: 20px; letter-spacing: -0.02em; }
 .brand span { color: var(--gold); }
-
-.nav-right {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.user-email {
-  font-size: 13px;
-  color: var(--muted);
-}
-
+.nav-right { display: flex; align-items: center; gap: 20px; }
+.user-email { font-size: 13px; color: var(--muted); }
 .btn-logout {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--muted);
-  background: none;
+  font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
+  color: var(--muted); background: none;
   border: 1px solid var(--divider-strong);
-  padding: 7px 14px;
-  cursor: pointer;
-  letter-spacing: 0.04em;
+  padding: 7px 14px; cursor: pointer; letter-spacing: 0.04em;
   transition: color 0.15s, border-color 0.15s;
 }
 .btn-logout:hover { color: var(--fg); border-color: var(--fg); }
 
+/* ── Layout ── */
 .main {
-  position: relative;
-  z-index: 1;
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 64px 48px;
+  position: relative; z-index: 1;
+  max-width: 960px; margin: 0 auto;
+  padding: 48px 48px 80px;
 }
 
-.greeting {
-  margin-bottom: 48px;
-}
-.greeting-label {
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 8px;
-}
-.greeting-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 32px;
-  letter-spacing: -0.02em;
-  color: var(--ink-2);
-}
-
-/* Cards de próximas funciones */
-.cards {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 1px;
-  background: var(--divider-strong);
-  border: 1px solid var(--divider-strong);
-  margin-bottom: 48px;
-}
-
-.card {
-  background: var(--bg-card);
-  padding: 28px 24px;
-}
-
-.card-icon {
-  font-size: 24px;
-  margin-bottom: 12px;
-}
-
-.card-title {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--ink-2);
-  margin-bottom: 6px;
-}
-
-.card-desc {
-  font-size: 13px;
-  color: var(--muted);
-  line-height: 1.5;
-}
-
-.badge {
-  display: inline-block;
-  margin-top: 12px;
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--gold);
-  background: var(--gold-soft);
-  padding: 3px 8px;
-}
-
-.coming-soon { opacity: 0.5; }
-
-/* Trial banner */
+/* ── Trial banner ── */
 .trial-banner {
   background: var(--gold-soft);
   border: 1px solid rgba(184,146,58,0.2);
-  padding: 16px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 36px;
-  font-size: 14px;
+  padding: 13px 18px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 40px; font-size: 13px;
 }
 .trial-banner strong { color: var(--gold); }
 
+/* ── Greeting ── */
+.greeting { margin-bottom: 40px; }
+.greeting-label {
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 6px;
+}
+.greeting-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px; letter-spacing: -0.02em; color: var(--ink-2);
+}
+
+/* ── Stats ── */
+.stats {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--divider-strong);
+  border: 1px solid var(--divider-strong);
+  margin-bottom: 40px;
+}
+.stat {
+  background: var(--bg-card); padding: 20px 24px;
+}
+.stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px; letter-spacing: -0.02em; color: var(--ink-2);
+  margin-bottom: 4px;
+}
+.stat-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* ── Section header ── */
+.section-header {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.section-title-sm {
+  font-size: 13px; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--ink-2);
+}
+.section-link {
+  font-size: 12px; color: var(--gold);
+  text-decoration: underline; text-underline-offset: 2px;
+  cursor: pointer; background: none; border: none; font-family: inherit;
+}
+
+/* ── Upload zone ── */
+.upload-zone {
+  border: 2px dashed var(--divider-strong);
+  background: var(--bg-card);
+  padding: 48px 32px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  margin-bottom: 24px;
+  position: relative;
+}
+.upload-zone:hover, .upload-zone.drag-over {
+  border-color: var(--gold);
+  background: var(--gold-soft);
+}
+.upload-zone input[type="file"] {
+  position: absolute; inset: 0;
+  opacity: 0; cursor: pointer; width: 100%; height: 100%;
+}
+.upload-icon { font-size: 32px; margin-bottom: 12px; }
+.upload-title { font-size: 16px; font-weight: 600; color: var(--ink-2); margin-bottom: 6px; }
+.upload-sub { font-size: 13px; color: var(--muted); }
+.upload-sub strong { color: var(--gold); }
+
+/* ── Template download ── */
+.template-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--divider-strong);
+  margin-bottom: 32px;
+}
+.template-icon { font-size: 18px; }
+.template-text { font-size: 13px; color: var(--muted); flex: 1; }
+.template-text strong { color: var(--fg); }
+.btn-download {
+  font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600;
+  color: var(--gold); background: var(--gold-soft);
+  border: 1px solid rgba(184,146,58,0.25);
+  padding: 7px 14px; cursor: pointer; letter-spacing: 0.04em;
+  text-decoration: none; transition: opacity 0.15s;
+  white-space: nowrap;
+}
+.btn-download:hover { opacity: 0.8; }
+
+/* ── Preview table ── */
+#preview-section { display: none; margin-bottom: 32px; }
+
+.preview-info {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 16px; background: var(--green-soft);
+  border: 1px solid rgba(63,156,100,0.2);
+  font-size: 13px; color: #2a7a4c;
+  margin-bottom: 16px;
+}
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--divider-strong); }
+table {
+  width: 100%; border-collapse: collapse;
+  font-size: 13px;
+}
+thead { background: var(--bg-card); }
+th {
+  padding: 10px 14px; text-align: left;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--muted);
+  border-bottom: 1px solid var(--divider-strong);
+}
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--divider);
+  color: var(--fg);
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--gold-soft); }
+
+.td-empty { color: var(--muted-2); font-style: italic; }
+.td-error { color: var(--red); }
+
+/* ── Errores de columnas ── */
+.col-errors {
+  display: none;
+  padding: 12px 16px;
+  background: var(--red-soft);
+  border: 1px solid rgba(192,82,79,0.2);
+  font-size: 13px; color: var(--red);
+  margin-bottom: 16px; line-height: 1.6;
+}
+
+/* ── Botones de acción ── */
+.action-row {
+  display: flex; gap: 12px; align-items: center;
+  margin-top: 16px;
+}
+.btn-primary {
+  font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600;
+  color: #fff; background: var(--gold);
+  border: none; padding: 12px 28px; cursor: pointer;
+  letter-spacing: 0.02em; transition: opacity 0.15s;
+}
+.btn-primary:hover { opacity: 0.9; }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-secondary {
+  font-family: 'DM Sans', sans-serif; font-size: 13px;
+  color: var(--muted); background: none;
+  border: 1px solid var(--divider-strong);
+  padding: 11px 20px; cursor: pointer;
+  transition: color 0.15s;
+}
+.btn-secondary:hover { color: var(--fg); }
+
+/* ── Success state ── */
+#success-section { display: none; }
+.success-box {
+  text-align: center; padding: 48px 32px;
+  background: var(--bg-card);
+  border: 1px solid var(--divider-strong);
+}
+.success-icon { font-size: 40px; margin-bottom: 16px; }
+.success-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; letter-spacing: -0.02em;
+  color: var(--ink-2); margin-bottom: 8px;
+}
+.success-sub { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+
+/* ── Spinner ── */
+.spinner {
+  display: inline-block; width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff; border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle; margin-right: 6px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Clientes list (post-upload) ── */
+#clients-section { display: none; }
+
+/* ── Responsive ── */
 @media (max-width: 640px) {
-  nav { padding: 18px 20px; }
-  .main { padding: 40px 20px; }
-  .cards { grid-template-columns: 1fr; }
+  nav { padding: 16px 20px; }
+  .main { padding: 32px 20px 60px; }
+  .stats { grid-template-columns: 1fr 1fr; }
   .user-email { display: none; }
-  .trial-banner { flex-direction: column; gap: 8px; }
+  .action-row { flex-direction: column; }
+  .btn-primary, .btn-secondary { width: 100%; text-align: center; }
 }
 </style>
 </head>
@@ -202,66 +301,409 @@ nav {
 
 <div class="main">
 
+  <!-- Trial banner -->
   <div class="trial-banner">
-    <span>🎉 Estás en tu período de prueba gratuito de <strong>14 días</strong>. Sin tarjeta requerida.</span>
+    <span>Estás en tu período de prueba de <strong>14 días</strong>. Sin tarjeta requerida.</span>
   </div>
 
+  <!-- Greeting -->
   <div class="greeting">
     <p class="greeting-label">Tu panel</p>
     <h1 class="greeting-title" id="greeting-title">Bienvenido a Follow</h1>
   </div>
 
-  <div class="cards">
-    <div class="card coming-soon">
-      <div class="card-icon">📋</div>
-      <div class="card-title">Mis clientes</div>
-      <div class="card-desc">Sube tu lista de clientes desde Excel o Google Sheets.</div>
-      <span class="badge">Próximamente</span>
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num" id="stat-clientes">0</div>
+      <div class="stat-label">Clientes</div>
     </div>
-    <div class="card coming-soon">
-      <div class="card-icon">📅</div>
-      <div class="card-title">Citas</div>
-      <div class="card-desc">Ve y gestiona todas las citas programadas.</div>
-      <span class="badge">Próximamente</span>
+    <div class="stat">
+      <div class="stat-num" id="stat-citas">0</div>
+      <div class="stat-label">Citas</div>
     </div>
-    <div class="card coming-soon">
-      <div class="card-icon">💬</div>
-      <div class="card-title">Mensajes</div>
-      <div class="card-desc">Historial de confirmaciones y recordatorios enviados.</div>
-      <span class="badge">Próximamente</span>
+    <div class="stat">
+      <div class="stat-num" id="stat-mensajes">0</div>
+      <div class="stat-label">Mensajes enviados</div>
+    </div>
+  </div>
+
+  <!-- Upload section -->
+  <div id="upload-section">
+
+    <div class="section-header">
+      <span class="section-title-sm">Subir lista de clientes</span>
+    </div>
+
+    <!-- Descarga plantilla -->
+    <div class="template-row">
+      <span class="template-icon">📄</span>
+      <span class="template-text">
+        <strong>¿Primera vez?</strong> Descarga nuestra plantilla, llénala con tus clientes y súbela aquí.
+      </span>
+      <a href="assets/plantilla-clientes.csv" download="plantilla-follow.csv" class="btn-download">
+        Descargar plantilla
+      </a>
+    </div>
+
+    <!-- Drop zone -->
+    <div class="upload-zone" id="drop-zone"
+         ondragover="handleDragOver(event)"
+         ondragleave="handleDragLeave(event)"
+         ondrop="handleDrop(event)">
+      <input type="file" accept=".xlsx,.xls,.csv" onchange="handleFileSelect(event)">
+      <div class="upload-icon">📂</div>
+      <div class="upload-title">Arrastra tu archivo aquí</div>
+      <div class="upload-sub">o haz clic para seleccionar · <strong>.xlsx, .xls o .csv</strong></div>
+    </div>
+
+    <!-- Errores de columnas -->
+    <div class="col-errors" id="col-errors"></div>
+
+    <!-- Preview -->
+    <div id="preview-section">
+      <div class="preview-info" id="preview-info"></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nombre</th>
+              <th>Teléfono</th>
+              <th>Email</th>
+              <th>Fecha cita</th>
+              <th>Hora</th>
+              <th>Servicio</th>
+            </tr>
+          </thead>
+          <tbody id="preview-tbody"></tbody>
+        </table>
+      </div>
+      <div class="action-row">
+        <button class="btn-primary" id="btn-import" onclick="importData()">
+          Importar clientes
+        </button>
+        <button class="btn-secondary" onclick="resetUpload()">Cancelar</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Success -->
+  <div id="success-section">
+    <div class="success-box">
+      <div class="success-icon">✅</div>
+      <div class="success-title" id="success-title">¡Importación completada!</div>
+      <div class="success-sub" id="success-sub"></div>
+      <button class="btn-primary" onclick="resetUpload()">Subir otro archivo</button>
     </div>
   </div>
 
 </div>
 
+<!-- SheetJS para leer Excel -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
 <script>
+// ── Config ──────────────────────────────────────────────────────
 const SUPABASE_URL  = 'https://bvzjqtesmcqdnbdxeksj.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ2empxdGVzbWNxZG5iZHhla3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNDQwNzYsImV4cCI6MjA5MzkyMDA3Nn0.OBGstk8W5cfemD_ysj3uMvfI7p5fuAXqJO7yNW_adac';
-
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
 
+let currentUser = null;
+let professionalId = null;
+let parsedRows = [];
+
+// ── Auth guard ──────────────────────────────────────────────────
 (async () => {
   const { data: { session } } = await sb.auth.getSession();
+  if (!session) { window.location.href = 'login.html'; return; }
 
-  // Si no hay sesión, manda al login
-  if (!session) {
-    window.location.href = 'login.html';
+  currentUser = session.user;
+  document.getElementById('user-email').textContent = currentUser.email;
+
+  const name = currentUser.user_metadata?.name;
+  if (name) {
+    document.getElementById('greeting-title').textContent = `Hola, ${name.split(' ')[0]} 👋`;
+  }
+
+  // Obtener professional_id
+  const { data: prof } = await sb
+    .from('professionals')
+    .select('id')
+    .eq('user_id', currentUser.id)
+    .single();
+
+  if (prof) {
+    professionalId = prof.id;
+    loadStats();
+  }
+})();
+
+// ── Cargar stats ────────────────────────────────────────────────
+async function loadStats() {
+  const [{ count: c1 }, { count: c2 }, { count: c3 }] = await Promise.all([
+    sb.from('clients').select('*', { count: 'exact', head: true }).eq('professional_id', professionalId),
+    sb.from('appointments').select('*', { count: 'exact', head: true }).eq('professional_id', professionalId),
+    sb.from('messages').select('*', { count: 'exact', head: true }).eq('professional_id', professionalId),
+  ]);
+  document.getElementById('stat-clientes').textContent  = c1 ?? 0;
+  document.getElementById('stat-citas').textContent     = c2 ?? 0;
+  document.getElementById('stat-mensajes').textContent  = c3 ?? 0;
+}
+
+// ── Drag & drop ─────────────────────────────────────────────────
+function handleDragOver(e) {
+  e.preventDefault();
+  document.getElementById('drop-zone').classList.add('drag-over');
+}
+function handleDragLeave(e) {
+  document.getElementById('drop-zone').classList.remove('drag-over');
+}
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('drop-zone').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) processFile(file);
+}
+function handleFileSelect(e) {
+  const file = e.target.files[0];
+  if (file) processFile(file);
+}
+
+// ── Parsear archivo ─────────────────────────────────────────────
+function processFile(file) {
+  hideErrors();
+  const ext = file.name.split('.').pop().toLowerCase();
+  const reader = new FileReader();
+
+  reader.onload = (e) => {
+    let rows = [];
+    if (ext === 'csv') {
+      rows = parseCSV(e.target.result);
+    } else {
+      const wb = XLSX.read(e.target.result, { type: 'array', cellDates: true });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
+    }
+    validateAndPreview(rows);
+  };
+
+  if (ext === 'csv') {
+    reader.readAsText(file, 'UTF-8');
+  } else {
+    reader.readAsArrayBuffer(file);
+  }
+}
+
+// ── Parsear CSV manual ──────────────────────────────────────────
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/['"]/g, ''));
+  return lines.slice(1).map(line => {
+    const vals = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+    const obj = {};
+    headers.forEach((h, i) => obj[h] = vals[i] || '');
+    return obj;
+  });
+}
+
+// ── Validar columnas y mostrar preview ─────────────────────────
+const COL_MAP = {
+  nombre:     ['nombre', 'name', 'cliente', 'paciente'],
+  telefono:   ['telefono', 'teléfono', 'phone', 'tel', 'whatsapp', 'celular'],
+  email:      ['email', 'correo', 'mail'],
+  fecha_cita: ['fecha_cita', 'fecha', 'date', 'fecha de cita'],
+  hora_cita:  ['hora_cita', 'hora', 'time', 'hora de cita'],
+  servicio:   ['servicio', 'service', 'tratamiento', 'tipo'],
+};
+
+function findColumn(headers, aliases) {
+  return headers.find(h => aliases.includes(h.toLowerCase().trim())) || null;
+}
+
+function validateAndPreview(rows) {
+  if (!rows.length) { showError('El archivo está vacío.'); return; }
+
+  const headers = Object.keys(rows[0]).map(h => h.toLowerCase().trim());
+  const mapping = {};
+  const missing = [];
+
+  for (const [field, aliases] of Object.entries(COL_MAP)) {
+    const found = findColumn(headers, aliases);
+    if (found) {
+      mapping[field] = found;
+    } else if (field === 'nombre') {
+      missing.push(`"nombre" (o "cliente", "paciente")`);
+    }
+    // otros campos son opcionales
+  }
+
+  if (missing.length) {
+    showError(`Faltan columnas requeridas: ${missing.join(', ')}. Revisa que tu archivo tenga los encabezados correctos.`);
     return;
   }
 
-  const user = session.user;
+  // Normalizar filas
+  parsedRows = rows
+    .filter(r => {
+      const nombre = r[mapping.nombre] || '';
+      return nombre.toString().trim() !== '';
+    })
+    .map((r, i) => ({
+      index: i + 1,
+      nombre:     (r[mapping.nombre]     || '').toString().trim(),
+      telefono:   (r[mapping.telefono]   || '').toString().trim(),
+      email:      (r[mapping.email]      || '').toString().trim(),
+      fecha_cita: formatDate(r[mapping.fecha_cita]),
+      hora_cita:  formatTime(r[mapping.hora_cita]),
+      servicio:   (r[mapping.servicio]   || '').toString().trim(),
+    }));
 
-  // Mostrar email en nav
-  document.getElementById('user-email').textContent = user.email;
+  if (!parsedRows.length) { showError('No se encontraron filas con datos válidos.'); return; }
 
-  // Saludo personalizado
-  const name = user.user_metadata?.name;
-  if (name) {
-    document.getElementById('greeting-title').textContent = `Hola, ${name} 👋`;
+  renderPreview();
+}
+
+// ── Formatear fecha ─────────────────────────────────────────────
+function formatDate(val) {
+  if (!val) return '';
+  if (val instanceof Date) return val.toISOString().split('T')[0];
+  const s = val.toString().trim();
+  // YYYY-MM-DD
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.split('T')[0];
+  // DD/MM/YYYY
+  const m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+  if (m) return `${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+  return s;
+}
+
+// ── Formatear hora ──────────────────────────────────────────────
+function formatTime(val) {
+  if (!val) return '';
+  if (val instanceof Date) return val.toTimeString().slice(0, 5);
+  const s = val.toString().trim();
+  // HH:MM
+  if (/^\d{1,2}:\d{2}/.test(s)) return s.slice(0, 5);
+  return s;
+}
+
+// ── Render preview ──────────────────────────────────────────────
+function renderPreview() {
+  const tbody = document.getElementById('preview-tbody');
+  tbody.innerHTML = '';
+
+  parsedRows.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${r.index}</td>
+      <td>${r.nombre}</td>
+      <td>${r.telefono || '<span class="td-empty">—</span>'}</td>
+      <td>${r.email    || '<span class="td-empty">—</span>'}</td>
+      <td>${r.fecha_cita || '<span class="td-empty">—</span>'}</td>
+      <td>${r.hora_cita  || '<span class="td-empty">—</span>'}</td>
+      <td>${r.servicio   || '<span class="td-empty">—</span>'}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('preview-info').textContent =
+    `${parsedRows.length} registro${parsedRows.length !== 1 ? 's' : ''} encontrado${parsedRows.length !== 1 ? 's' : ''}. Revisa los datos y confirma la importación.`;
+
+  document.getElementById('preview-section').style.display = 'block';
+  document.getElementById('preview-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── Importar a Supabase ─────────────────────────────────────────
+async function importData() {
+  if (!professionalId) { showError('Error: no se encontró tu perfil. Recarga la página.'); return; }
+
+  const btn = document.getElementById('btn-import');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Importando...';
+
+  let clientesOk = 0, citasOk = 0, errores = 0;
+
+  for (const row of parsedRows) {
+    try {
+      // 1. Insertar / buscar cliente
+      const { data: client, error: cErr } = await sb
+        .from('clients')
+        .insert({
+          professional_id: professionalId,
+          name:  row.nombre,
+          phone: row.telefono || null,
+          email: row.email    || null,
+        })
+        .select('id')
+        .single();
+
+      if (cErr) { errores++; continue; }
+      clientesOk++;
+
+      // 2. Insertar cita si hay fecha
+      if (row.fecha_cita) {
+        const timeStr  = row.hora_cita || '09:00';
+        const datetime = `${row.fecha_cita}T${timeStr}:00`;
+
+        const { error: aErr } = await sb
+          .from('appointments')
+          .insert({
+            professional_id: professionalId,
+            client_id:       client.id,
+            scheduled_at:    datetime,
+            service:         row.servicio || null,
+            status:          'scheduled',
+            source:          'excel',
+          });
+
+        if (!aErr) citasOk++;
+      }
+
+    } catch (e) {
+      errores++;
+    }
   }
-})();
+
+  // Mostrar resultado
+  document.getElementById('upload-section').style.display = 'none';
+  document.getElementById('success-section').style.display = 'block';
+  document.getElementById('success-title').textContent =
+    errores === 0 ? '¡Importación completada!' : `Importación con ${errores} errores`;
+  document.getElementById('success-sub').textContent =
+    `${clientesOk} cliente${clientesOk !== 1 ? 's' : ''} y ${citasOk} cita${citasOk !== 1 ? 's' : ''} guardados en Follow.`;
+
+  loadStats();
+}
+
+// ── Reset ────────────────────────────────────────────────────────
+function resetUpload() {
+  parsedRows = [];
+  document.getElementById('preview-section').style.display = 'none';
+  document.getElementById('success-section').style.display = 'none';
+  document.getElementById('upload-section').style.display  = 'block';
+  document.getElementById('preview-tbody').innerHTML = '';
+  hideErrors();
+  // Reset file input
+  const input = document.querySelector('input[type="file"]');
+  if (input) input.value = '';
+  const btn = document.getElementById('btn-import');
+  btn.disabled = false;
+  btn.textContent = 'Importar clientes';
+}
+
+// ── Helpers ──────────────────────────────────────────────────────
+function showError(msg) {
+  const el = document.getElementById('col-errors');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+function hideErrors() {
+  document.getElementById('col-errors').style.display = 'none';
+}
 
 async function handleLogout() {
   await sb.auth.signOut();
