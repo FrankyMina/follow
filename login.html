@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Follow — Acceder</title>
+
+<style>
+/* ── Fuentes locales ── */
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 300 600;
+  font-display: swap;
+  src: url("assets/fonts/cbc123f8.woff2") format('woff2');
+}
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("assets/fonts/37c3da24-3551-4aec-a420-bdf48f7dc280") format('woff2');
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #fbfaf7;
+  --bg-card:   #f3f1ec;
+  --fg:        #14130f;
+  --ink-2:     #3a3833;
+  --muted:     #6b6860;
+  --muted-2:   #9b9890;
+  --gold:      #b8923a;
+  --gold-soft: rgba(184,146,58,0.10);
+  --green:     #3f9c64;
+  --red:       #c0524f;
+  --divider:   rgba(20,19,15,0.08);
+  --divider-strong: rgba(20,19,15,0.16);
+}
+
+html, body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Textura papel */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 1px 1px, rgba(20,19,15,0.025) 1px, transparent 0);
+  background-size: 22px 22px;
+  z-index: 0;
+  opacity: 0.5;
+}
+
+/* ── Layout ── */
+.page {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Nav ── */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 48px;
+  border-bottom: 1px solid var(--divider);
+  background: rgba(251,250,247,0.85);
+  backdrop-filter: blur(10px);
+}
+.brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+  text-decoration: none;
+}
+.brand span { color: var(--gold); }
+
+.nav-back {
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.15s;
+}
+.nav-back:hover { color: var(--fg); }
+
+/* ── Contenedor central ── */
+.center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+}
+
+/* ── Card ── */
+.card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--bg-card);
+  border: 1px solid var(--divider-strong);
+  padding: 40px 40px 36px;
+}
+
+.card-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-family: 'DM Mono', monospace;
+  margin-bottom: 8px;
+}
+
+.card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  letter-spacing: -0.02em;
+  color: var(--ink-2);
+  margin-bottom: 28px;
+  line-height: 1.2;
+}
+
+/* ── Tabs ── */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--divider-strong);
+  margin-bottom: 28px;
+}
+.tab {
+  flex: 1;
+  padding: 10px 0;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  color: var(--muted);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  transition: color 0.15s, border-color 0.15s;
+}
+.tab.active {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+.tab:hover:not(.active) { color: var(--ink-2); }
+
+/* ── Formulario ── */
+.form-group {
+  margin-bottom: 16px;
+}
+label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 11px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--divider-strong);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  appearance: none;
+}
+input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px var(--gold-soft);
+}
+
+/* ── Botón principal ── */
+.btn-primary {
+  width: 100%;
+  padding: 13px;
+  margin-top: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #fff;
+  background: var(--gold);
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.btn-primary:hover { opacity: 0.9; }
+.btn-primary:active { transform: scale(0.99); }
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Mensajes ── */
+.msg {
+  display: none;
+  padding: 12px 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+  border-left: 3px solid;
+}
+.msg.error {
+  background: rgba(192,82,79,0.08);
+  border-color: var(--red);
+  color: var(--red);
+}
+.msg.success {
+  background: rgba(63,156,100,0.08);
+  border-color: var(--green);
+  color: #2a7a4c;
+}
+.msg.show { display: block; }
+
+/* ── Footer de la card ── */
+.card-footer {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--divider);
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+}
+.card-footer a {
+  color: var(--gold);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ── Divisor "o" ── */
+.or-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  font-size: 12px;
+  color: var(--muted-2);
+}
+.or-divider::before,
+.or-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--divider-strong);
+}
+
+/* ── Spinner ── */
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Panel oculto ── */
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  nav { padding: 18px 20px; }
+  .card { padding: 28px 24px 24px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Nav -->
+  <nav>
+    <a href="index.html" class="brand">Follow<span>.</span></a>
+    <a href="index.html" class="nav-back">← Volver al inicio</a>
+  </nav>
+
+  <!-- Centro -->
+  <div class="center">
+    <div class="card">
+
+      <p class="card-eyebrow">Tu cuenta</p>
+      <h1 class="card-title">Bienvenido de regreso</h1>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('login')">Iniciar sesión</button>
+        <button class="tab" onclick="switchTab('signup')">Crear cuenta</button>
+      </div>
+
+      <!-- Mensaje de error/éxito -->
+      <div class="msg error" id="msg-error"></div>
+      <div class="msg success" id="msg-success"></div>
+
+      <!-- Panel: Login -->
+      <div class="panel active" id="panel-login">
+        <form onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label for="login-email">Correo electrónico</label>
+            <input type="email" id="login-email" placeholder="tu@correo.com" required autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label for="login-password">Contraseña</label>
+            <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+          <button type="submit" class="btn-primary" id="btn-login">Entrar a Follow</button>
+        </form>
+        <div class="card-footer">
+          ¿Olvidaste tu contraseña? <a href="#" onclick="handleForgot(event)">Recuperar acceso</a>
+        </div>
+      </div>
+
+      <!-- Panel: Signup -->
+      <div class="panel" id="panel-signup">
+        <form onsubmit="handleSignup(event)">
+          <div class="form-group">
+            <label for="signup-name">Tu nombre o negocio</label>
+            <input type="text" id="signup-name" placeholder="Ej. Dra. García / Clínica Salud" required>
+          </div>
+          <div class="form-group">
+            <label for="signup-email">Correo electrónico</label>
+            <input type="email" id="signup-email" placeholder="tu@correo.com" required autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label for="signup-password">Contraseña</label>
+            <input type="password" id="signup-password" placeholder="Mínimo 8 caracteres" required minlength="8" autocomplete="new-password">
+          </div>
+          <button type="submit" class="btn-primary" id="btn-signup">Crear cuenta gratis</button>
+        </form>
+        <div class="card-footer">
+          Al registrarte aceptas nuestros <a href="#">Términos de uso</a>.
+          14 días de prueba gratis, sin tarjeta.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Supabase JS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+<script>
+// ── Configuración Supabase ──────────────────────────────────────
+const SUPABASE_URL  = 'https://bvzjqtesmcqdnbdxeksj.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ2empxdGVzbWNxZG5iZHhla3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNDQwNzYsImV4cCI6MjA5MzkyMDA3Nn0.OBGstk8W5cfemD_ysj3uMvfI7p5fuAXqJO7yNW_adac';
+
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
+
+// ── Tabs ───────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'signup'));
+  });
+  document.getElementById('panel-login').classList.toggle('active', tab === 'login');
+  document.getElementById('panel-signup').classList.toggle('active', tab === 'signup');
+
+  // Actualizar título
+  document.querySelector('.card-title').textContent =
+    tab === 'login' ? 'Bienvenido de regreso' : 'Empieza gratis hoy';
+
+  clearMessages();
+}
+
+// ── Mensajes ───────────────────────────────────────────────────
+function showError(text) {
+  const el = document.getElementById('msg-error');
+  el.textContent = text;
+  el.classList.add('show');
+  document.getElementById('msg-success').classList.remove('show');
+}
+function showSuccess(text) {
+  const el = document.getElementById('msg-success');
+  el.textContent = text;
+  el.classList.add('show');
+  document.getElementById('msg-error').classList.remove('show');
+}
+function clearMessages() {
+  document.getElementById('msg-error').classList.remove('show');
+  document.getElementById('msg-success').classList.remove('show');
+}
+
+// ── Loading state ──────────────────────────────────────────────
+function setLoading(btnId, loading, text) {
+  const btn = document.getElementById(btnId);
+  btn.disabled = loading;
+  btn.innerHTML = loading
+    ? `<span class="spinner"></span>${text}`
+    : text;
+}
+
+// ── Login ──────────────────────────────────────────────────────
+async function handleLogin(e) {
+  e.preventDefault();
+  clearMessages();
+  const email    = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+
+  setLoading('btn-login', true, 'Entrando...');
+
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+  setLoading('btn-login', false, 'Entrar a Follow');
+
+  if (error) {
+    const msgs = {
+      'Invalid login credentials': 'Correo o contraseña incorrectos.',
+      'Email not confirmed': 'Confirma tu correo antes de entrar. Revisa tu bandeja de entrada.',
+    };
+    showError(msgs[error.message] || error.message);
+    return;
+  }
+
+  // Éxito → redirige al dashboard
+  window.location.href = 'dashboard.html';
+}
+
+// ── Signup ─────────────────────────────────────────────────────
+async function handleSignup(e) {
+  e.preventDefault();
+  clearMessages();
+  const name     = document.getElementById('signup-name').value.trim();
+  const email    = document.getElementById('signup-email').value.trim();
+  const password = document.getElementById('signup-password').value;
+
+  setLoading('btn-signup', true, 'Creando cuenta...');
+
+  const { data, error } = await sb.auth.signUp({
+    email,
+    password,
+    options: {
+      data: { name }   // se guarda en raw_user_meta_data → trigger lo manda a professionals
+    }
+  });
+
+  setLoading('btn-signup', false, 'Crear cuenta gratis');
+
+  if (error) {
+    const msgs = {
+      'User already registered': 'Ya existe una cuenta con ese correo. <a href="#" onclick="switchTab(\'login\')">Inicia sesión</a>.',
+      'Password should be at least 6 characters': 'La contraseña debe tener al menos 8 caracteres.',
+    };
+    showError(msgs[error.message] || error.message);
+    return;
+  }
+
+  // Supabase por defecto manda email de confirmación
+  showSuccess('¡Cuenta creada! Revisa tu correo para confirmar tu cuenta y luego inicia sesión.');
+}
+
+// ── Recuperar contraseña ────────────────────────────────────────
+async function handleForgot(e) {
+  e.preventDefault();
+  const email = document.getElementById('login-email').value.trim();
+  if (!email) {
+    showError('Escribe tu correo arriba y luego haz clic en "Recuperar acceso".');
+    return;
+  }
+  clearMessages();
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + '/login.html'
+  });
+  if (error) { showError(error.message); return; }
+  showSuccess(`Te enviamos un link para restablecer tu contraseña a ${email}.`);
+}
+
+// ── Si ya está autenticado, redirige directo ────────────────────
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) window.location.href = 'dashboard.html';
+})();
+</script>
+</body>
+</html>
