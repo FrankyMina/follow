@@ -496,7 +496,11 @@ async function handleForgot(e) {
 // ── Si ya está autenticado, redirige directo ────────────────────
 (async () => {
   const { data: { session } } = await sb.auth.getSession();
-  if (session) window.location.href = 'dashboard.html';
+  if (session) { window.location.href = 'dashboard.html'; return; }
+
+  // Abrir tab de registro si viene de "Empezar gratis"
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('signup') === '1') switchTab('signup');
 })();
 </script>
 </body>
