@@ -1,0 +1,10 @@
+node_modules/
+.claude/
+
+# Dev builds (no se usan en producción)
+assets/js/react.development.js
+assets/js/react-dom.development.js
+assets/js/babel.min.js
+assets/js/tweaks-panel.jsx
+assets/js/tweaks-panel.compiled.js
+assets/js/app.js
