@@ -163,7 +163,7 @@ function HeroChat({ tweaks }) {
             Tus citas, confirmadas. Tus clientes, <em>de regreso</em>.
           </h1>
           <p className="hero-sub">
-            Sube tu lista de clientes. Follow confirma, recuerda y reagenda por WhatsApp — automático, desde $399 al mes. Para médicos, coaches, abogados, estéticas y cualquier negocio que trabaja con citas.
+            Comparte tu agenda y Follow se encarga del resto: confirma, recuerda y reagenda por WhatsApp — automático, desde $499 al mes. Estamos contigo desde el primer mensaje hasta que veas el primer no-show recuperado.
           </p>
           <div className="hero-ctas">
             <a href="#empezar" className="btn btn-primary">Empezar prueba 14 días <span className="arrow">→</span></a>
@@ -229,7 +229,7 @@ function HeroStats({ tweaks }) {
             Mide en pesos lo que tu agenda <em>recupera</em>.
           </h1>
           <p className="hero-sub">
-            Follow no solo manda recordatorios — convierte cada cita salvada en una línea de ingreso que puedes ver. WhatsApp & Email automatizados, con tablero en tiempo real.
+            Follow no solo manda recordatorios — convierte cada cita salvada en una línea de ingreso que puedes ver y controlar. Te acompañamos en cada paso: desde la configuración hasta que la recuperación de citas sea parte natural de tu día.
           </p>
           <div className="hero-ctas">
             <a href="#empezar" className="btn btn-primary">Empezar prueba 14 días <span className="arrow">→</span></a>
