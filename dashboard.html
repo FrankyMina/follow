@@ -342,15 +342,76 @@ tbody tr:hover td { background: rgba(184,146,58,0.04); }
   color: var(--gold); background: var(--gold-soft); padding: 4px 10px;
 }
 
+/* ── Cita cards (móvil) ── */
+.citas-cards { display: flex; flex-direction: column; gap: 10px; }
+.cita-card {
+  background: var(--bg-card); border: 1px solid var(--divider-strong);
+  padding: 14px 16px;
+}
+.cita-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; gap: 10px; }
+.cita-card-name { font-weight: 600; font-size: 14px; color: var(--fg); }
+.cita-card-meta { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+.cita-card-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.cita-card-actions .btn-wa,
+.cita-card-actions .btn-email { padding: 8px 14px; font-size: 12px; flex: 1; justify-content: center; }
+
+/* Cliente cards (móvil) */
+.clientes-cards { display: flex; flex-direction: column; gap: 8px; }
+.cliente-card {
+  background: var(--bg-card); border: 1px solid var(--divider-strong);
+  padding: 13px 16px; display: flex; align-items: center; gap: 12px;
+}
+.cliente-avatar {
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+  background: var(--gold-soft); display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 600; color: var(--gold);
+}
+.cliente-info { flex: 1; min-width: 0; }
+.cliente-name { font-weight: 600; font-size: 13px; color: var(--fg); }
+.cliente-sub { font-size: 11px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
 /* ── Responsive ── */
 @media (max-width: 640px) {
   nav { padding: 14px 20px; }
-  .main { padding: 28px 16px 60px; }
+  .main { padding: 24px 16px 80px; }
   .stats { grid-template-columns: 1fr 1fr; }
   .user-email { display: none; }
-  .tab-btn { padding: 10px 12px; font-size: 12px; }
+  .tab-btn { padding: 10px 10px; font-size: 12px; gap: 4px; }
   .action-row { flex-direction: column; }
   .btn-primary, .btn-secondary { width: 100%; text-align: center; }
+
+  /* Ocultar tab "Subir lista" en móvil */
+  .tab-btn[data-tab="subir"] { display: none; }
+
+  /* Modal como bottom sheet */
+  .modal-overlay { align-items: flex-end; }
+  .modal-box {
+    max-width: 100%;
+    max-height: 88vh;
+    border-bottom: none;
+    animation: modal-up 0.22s ease;
+  }
+  @keyframes modal-up {
+    from { transform: translateY(100%); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+
+  /* Modal fields apilados en móvil */
+  .field-row { grid-template-columns: 1fr; }
+
+  /* Booking card vertical */
+  .booking-card { flex-direction: column; gap: 10px; }
+  .booking-link-wrap { flex-direction: column; }
+  .btn-copy { width: 100%; text-align: center; padding: 10px; }
+
+  /* Table header con botón full */
+  .table-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .table-header .btn-primary { width: 100%; text-align: center; }
+
+  /* Ocultar tabla en móvil (se reemplaza por cards) */
+  .mobile-hide { display: none !important; }
+  /* Elementos solo para desktop */
+  .desktop-only { display: none !important; }
 }
 </style>
 </head>
@@ -491,14 +552,14 @@ tbody tr:hover td { background: rgba(184,146,58,0.04); }
 
   <!-- Tabs nav -->
   <div class="tabs-nav">
-    <button class="tab-btn active" onclick="switchTab('subir')">Subir lista</button>
-    <button class="tab-btn" onclick="switchTab('clientes')">
+    <button class="tab-btn active" data-tab="subir" onclick="switchTab('subir')">Subir lista</button>
+    <button class="tab-btn" data-tab="clientes" onclick="switchTab('clientes')">
       Clientes <span class="tab-count" id="count-clientes">0</span>
     </button>
-    <button class="tab-btn" onclick="switchTab('citas')">
+    <button class="tab-btn" data-tab="citas" onclick="switchTab('citas')">
       Citas <span class="tab-count" id="count-citas">0</span>
     </button>
-    <button class="tab-btn" onclick="switchTab('mensajes')">Mensajes</button>
+    <button class="tab-btn" data-tab="mensajes" onclick="switchTab('mensajes')">Mensajes</button>
   </div>
 
   <!-- ── TAB: Subir ── -->
@@ -559,7 +620,7 @@ tbody tr:hover td { background: rgba(184,146,58,0.04); }
   <div class="tab-panel" id="tab-clientes">
     <div class="table-header">
       <span class="table-title">Mis clientes</span>
-      <button class="btn-sm" onclick="switchTab('subir')">+ Subir más</button>
+      <button class="btn-sm desktop-only" onclick="switchTab('subir')">+ Subir más</button>
     </div>
     <div id="clientes-content">
       <div class="table-wrap">
@@ -654,6 +715,8 @@ let parsedRows = [];
   if (prof) {
     professionalId = prof.id;
     showBookingLink(professionalId);
+    // En móvil arrancar en Citas, en desktop en Subir
+    if (isMobile()) switchTab('citas');
     loadAll();
   }
 })();
@@ -676,6 +739,8 @@ async function loadStats() {
   document.getElementById('count-citas').textContent    = c2 ?? 0;
 }
 
+const isMobile = () => window.innerWidth <= 640;
+
 // ── Clientes ────────────────────────────────────────────────────
 async function loadClientes() {
   const { data, error } = await sb
@@ -684,29 +749,53 @@ async function loadClientes() {
     .eq('professional_id', professionalId)
     .order('created_at', { ascending: false });
 
-  const tbody = document.getElementById('clientes-tbody');
+  const container = document.getElementById('clientes-content');
 
   if (error || !data || data.length === 0) {
-    tbody.innerHTML = `
-      <tr><td colspan="4">
-        <div class="empty-state">
-          <div class="empty-icon">👥</div>
-          <div class="empty-title">Aún no tienes clientes</div>
-          <div class="empty-sub">Sube tu lista de Excel para comenzar.</div>
-          <button class="btn-primary" onclick="switchTab('subir')">Subir lista</button>
-        </div>
-      </td></tr>`;
+    const emptyBtn = isMobile()
+      ? `<button class="btn-primary" onclick="openNuevaCita()">+ Nueva cita</button>`
+      : `<button class="btn-primary" onclick="switchTab('subir')">Subir lista</button>`;
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">👥</div>
+        <div class="empty-title">Aún no tienes clientes</div>
+        <div class="empty-sub">${isMobile() ? 'Agrega un cliente al crear tu primera cita.' : 'Sube tu lista de Excel para comenzar.'}</div>
+        ${emptyBtn}
+      </div>`;
     return;
   }
 
-  tbody.innerHTML = data.map(c => `
-    <tr>
-      <td><strong>${esc(c.name)}</strong></td>
-      <td>${c.phone ? esc(c.phone) : '<span class="td-muted">—</span>'}</td>
-      <td>${c.email ? esc(c.email) : '<span class="td-muted">—</span>'}</td>
-      <td><span class="td-muted">${formatDateShort(c.created_at)}</span></td>
-    </tr>
-  `).join('');
+  if (isMobile()) {
+    container.innerHTML = `<div class="clientes-cards">${
+      data.map(c => {
+        const initial = c.name.charAt(0).toUpperCase();
+        const sub = [c.phone, c.email].filter(Boolean).join(' · ') || 'Sin datos de contacto';
+        return `
+          <div class="cliente-card">
+            <div class="cliente-avatar">${initial}</div>
+            <div class="cliente-info">
+              <div class="cliente-name">${esc(c.name)}</div>
+              <div class="cliente-sub">${esc(sub)}</div>
+            </div>
+          </div>`;
+      }).join('')
+    }</div>`;
+  } else {
+    container.innerHTML = `
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Nombre</th><th>Teléfono</th><th>Email</th><th>Agregado</th></tr></thead>
+          <tbody>${data.map(c => `
+            <tr>
+              <td><strong>${esc(c.name)}</strong></td>
+              <td>${c.phone ? esc(c.phone) : '<span class="td-muted">—</span>'}</td>
+              <td>${c.email ? esc(c.email) : '<span class="td-muted">—</span>'}</td>
+              <td><span class="td-muted">${formatDateShort(c.created_at)}</span></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`;
+  }
 }
 
 // ── Citas ────────────────────────────────────────────────────────
@@ -717,23 +806,7 @@ async function loadCitas() {
     .eq('professional_id', professionalId)
     .order('scheduled_at', { ascending: true });
 
-  const tbody = document.getElementById('citas-tbody');
-
-  if (error || !data || data.length === 0) {
-    tbody.innerHTML = `
-      <tr><td colspan="5">
-        <div class="empty-state">
-          <div class="empty-icon">📅</div>
-          <div class="empty-title">No hay citas registradas</div>
-          <div class="empty-sub">Agenda una cita manualmente o sube un archivo con fechas.</div>
-          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-            <button class="btn-primary" onclick="openNuevaCita()">+ Nueva cita</button>
-            <button class="btn-secondary" onclick="switchTab('subir')">Subir lista</button>
-          </div>
-        </div>
-      </td></tr>`;
-    return;
-  }
+  const citasContent = document.getElementById('citas-content');
 
   const statusLabel = {
     scheduled:   'Programada',
@@ -744,23 +817,69 @@ async function loadCitas() {
     rescheduled: 'Reagendada',
   };
 
-  tbody.innerHTML = data.map(a => {
-    const canSend = ['scheduled', 'confirmed', 'rescheduled'].includes(a.status);
-    const waBtn = canSend && a.clients?.phone
-      ? `<button class="btn-wa" onclick="sendWhatsApp('${a.id}', this)">📲 WA</button>`
-      : `<span class="td-muted">${a.clients?.phone ? '—' : 'Sin tel.'}</span>`;
-    const emailBtn = canSend
-      ? `<button class="btn-email" onclick="sendEmail('${a.id}', this)">✉️ Email</button>`
-      : '';
-    return `
-      <tr>
-        <td><strong>${esc(a.clients?.name ?? '—')}</strong></td>
-        <td>${formatDateTime(a.scheduled_at)}</td>
-        <td>${a.service ? esc(a.service) : '<span class="td-muted">—</span>'}</td>
-        <td><span class="badge badge-${a.status}">${statusLabel[a.status] ?? a.status}</span></td>
-        <td style="display:flex;gap:6px;align-items:center">${waBtn}${emailBtn}</td>
-      </tr>`;
-  }).join('');
+  if (error || !data || data.length === 0) {
+    const extraBtn = isMobile() ? '' : `<button class="btn-secondary" onclick="switchTab('subir')">Subir lista</button>`;
+    citasContent.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📅</div>
+        <div class="empty-title">No hay citas registradas</div>
+        <div class="empty-sub">Agenda tu primera cita ahora.</div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <button class="btn-primary" onclick="openNuevaCita()">+ Nueva cita</button>
+          ${extraBtn}
+        </div>
+      </div>`;
+    return;
+  }
+
+  if (isMobile()) {
+    citasContent.innerHTML = `<div class="citas-cards">${
+      data.map(a => {
+        const canSend = ['scheduled', 'confirmed', 'rescheduled'].includes(a.status);
+        const waBtn = canSend && a.clients?.phone
+          ? `<button class="btn-wa" onclick="sendWhatsApp('${a.id}', this)">📲 WhatsApp</button>`
+          : '';
+        const emailBtn = canSend
+          ? `<button class="btn-email" onclick="sendEmail('${a.id}', this)">✉️ Email</button>`
+          : '';
+        return `
+          <div class="cita-card">
+            <div class="cita-card-top">
+              <div class="cita-card-name">${esc(a.clients?.name ?? '—')}</div>
+              <span class="badge badge-${a.status}">${statusLabel[a.status] ?? a.status}</span>
+            </div>
+            <div class="cita-card-meta">📅 ${formatDateTime(a.scheduled_at)}</div>
+            ${a.service ? `<div class="cita-card-meta">🏷️ ${esc(a.service)}</div>` : ''}
+            ${waBtn || emailBtn ? `<div class="cita-card-actions">${waBtn}${emailBtn}</div>` : ''}
+          </div>`;
+      }).join('')
+    }</div>`;
+  } else {
+    citasContent.innerHTML = `
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Cliente</th><th>Fecha y hora</th><th>Servicio</th><th>Estatus</th><th>Acciones</th></tr></thead>
+          <tbody>${data.map(a => {
+            const canSend = ['scheduled', 'confirmed', 'rescheduled'].includes(a.status);
+            const waBtn = canSend && a.clients?.phone
+              ? `<button class="btn-wa" onclick="sendWhatsApp('${a.id}', this)">📲 WA</button>`
+              : `<span class="td-muted">${a.clients?.phone ? '—' : 'Sin tel.'}</span>`;
+            const emailBtn = canSend
+              ? `<button class="btn-email" onclick="sendEmail('${a.id}', this)">✉️ Email</button>`
+              : '';
+            return `
+              <tr>
+                <td><strong>${esc(a.clients?.name ?? '—')}</strong></td>
+                <td>${formatDateTime(a.scheduled_at)}</td>
+                <td>${a.service ? esc(a.service) : '<span class="td-muted">—</span>'}</td>
+                <td><span class="badge badge-${a.status}">${statusLabel[a.status] ?? a.status}</span></td>
+                <td style="display:flex;gap:6px;align-items:center">${waBtn}${emailBtn}</td>
+              </tr>`;
+          }).join('')}
+          </tbody>
+        </table>
+      </div>`;
+  }
 }
 
 // ── Enviar WhatsApp ───────────────────────────────────────────────
@@ -889,9 +1008,11 @@ function showToast(msg, type = 'ok') {
 
 // ── Tab switcher ────────────────────────────────────────────────
 function switchTab(name) {
-  document.querySelectorAll('.tab-btn').forEach((btn, i) => {
-    const names = ['subir', 'clientes', 'citas', 'mensajes'];
-    btn.classList.toggle('active', names[i] === name);
+  // En móvil, redirigir "subir" a "citas"
+  if (isMobile() && name === 'subir') name = 'citas';
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === name);
   });
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById(`tab-${name}`).classList.add('active');
