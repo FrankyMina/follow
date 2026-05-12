@@ -92,7 +92,9 @@ Deno.serve(async (req) => {
 
     // Si el cliente pide hablar con un humano, notificar al profesional
     if (msgType === 'escalate') {
-      await notifyProfessional(sb, client, appointment, params.get('Body') || body);
+      notifyProfessional(sb, client, appointment, params.get('Body') || body).catch((err) => {
+        console.error('Error al notificar al profesional:', err);
+      });
     }
 
     return twimlResponse(responseMsg);
@@ -188,7 +190,7 @@ async function notifyProfessional(
   const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`;
   const to = `whatsapp:${prof.whatsapp}`;
 
-  await fetch(twilioUrl, {
+  const res = await fetch(twilioUrl, {
     method: 'POST',
     headers: {
       'Authorization': `Basic ${btoa(`${accountSid}:${authToken}`)}`,
@@ -196,6 +198,10 @@ async function notifyProfessional(
     },
     body: new URLSearchParams({ From: fromNumber, To: to, Body: notifMsg }),
   });
+  if (!res.ok) {
+    const errBody = await res.text();
+    console.error(`Twilio notif error ${res.status}:`, errBody);
+  }
 }
 
 // ── Validar firma HMAC de Twilio ──────────────────────────────────
