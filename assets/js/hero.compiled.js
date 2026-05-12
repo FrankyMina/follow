@@ -1,8 +1,10 @@
+"use strict";
+
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 // Hero component with 3 variants
 var _React = React,
@@ -243,11 +245,11 @@ function HeroChat(_ref2) {
     className: "hero-copy"
   }, /*#__PURE__*/React.createElement("p", {
     className: "eyebrow hero-eyebrow"
-  }, "\u2014 WhatsApp · Automático · Cualquier negocio"), /*#__PURE__*/React.createElement("h1", {
+  }, "\u2014 WhatsApp \xB7 Autom\xE1tico \xB7 Cualquier negocio"), /*#__PURE__*/React.createElement("h1", {
     className: "hero-title"
   }, "Tus citas, confirmadas. Tus clientes, ", /*#__PURE__*/React.createElement("em", null, "de regreso"), "."), /*#__PURE__*/React.createElement("p", {
     className: "hero-sub"
-  }, "Sube tu lista de clientes. Follow confirma, recuerda y reagenda por WhatsApp — automático, desde $399 al mes. Para médicos, coaches, abogados, estéticas y cualquier negocio que trabaja con citas."), /*#__PURE__*/React.createElement("div", {
+  }, "Comparte tu agenda y Follow se encarga del resto: confirma, recuerda y reagenda por WhatsApp \u2014 autom\xE1tico, desde $499 al mes. Estamos contigo desde el primer mensaje hasta que veas el primer no-show recuperado."), /*#__PURE__*/React.createElement("div", {
     className: "hero-ctas"
   }, /*#__PURE__*/React.createElement("a", {
     href: "#empezar",
@@ -320,7 +322,7 @@ function HeroStats(_ref3) {
     className: "hero-title"
   }, "Mide en pesos lo que tu agenda ", /*#__PURE__*/React.createElement("em", null, "recupera"), "."), /*#__PURE__*/React.createElement("p", {
     className: "hero-sub"
-  }, "Follow no solo manda recordatorios \u2014 convierte cada cita salvada en una l\xEDnea de ingreso que puedes ver. WhatsApp & Email automatizados, con tablero en tiempo real."), /*#__PURE__*/React.createElement("div", {
+  }, "Follow no solo manda recordatorios \u2014 convierte cada cita salvada en una l\xEDnea de ingreso que puedes ver y controlar. Te acompa\xF1amos en cada paso: desde la configuraci\xF3n hasta que la recuperaci\xF3n de citas sea parte natural de tu d\xEDa."), /*#__PURE__*/React.createElement("div", {
     className: "hero-ctas"
   }, /*#__PURE__*/React.createElement("a", {
     href: "#empezar",
@@ -458,7 +460,7 @@ function HeroType(_ref4) {
     className: "lbl"
   }, "Canales"), /*#__PURE__*/React.createElement("span", {
     className: "val"
-  }, /*#__PURE__*/React.createElement("em", null, "WhatsApp"), " & Email"), /*#__PURE__*/React.createElement("p", null, "El cliente recibe el mensaje donde ya est\xE1.")), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("em", null, "WhatsApp"), ", SMS, Email"), /*#__PURE__*/React.createElement("p", null, "El cliente recibe el mensaje donde ya est\xE1.")), /*#__PURE__*/React.createElement("div", {
     className: "item"
   }, /*#__PURE__*/React.createElement("span", {
     className: "lbl"
