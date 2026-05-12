@@ -338,6 +338,24 @@ input:focus {
         </div>
       </div>
 
+      <!-- Panel: Reset password (aparece cuando el usuario llega del email) -->
+      <div class="panel" id="panel-reset">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.5;">
+          Elige una contraseña nueva para tu cuenta. Debe tener al menos 8 caracteres.
+        </p>
+        <form onsubmit="handleReset(event)">
+          <div class="form-group">
+            <label for="reset-password">Nueva contraseña</label>
+            <input type="password" id="reset-password" placeholder="Mínimo 8 caracteres" required minlength="8" autocomplete="new-password">
+          </div>
+          <div class="form-group">
+            <label for="reset-password2">Confirmar contraseña</label>
+            <input type="password" id="reset-password2" placeholder="Repite la contraseña" required minlength="8" autocomplete="new-password">
+          </div>
+          <button type="submit" class="btn-primary" id="btn-reset">Guardar nueva contraseña</button>
+        </form>
+      </div>
+
       <!-- Panel: Signup -->
       <div class="panel" id="panel-signup">
         <form onsubmit="handleSignup(event)">
@@ -493,8 +511,47 @@ async function handleForgot(e) {
   showSuccess(`Te enviamos un link para restablecer tu contraseña a ${email}.`);
 }
 
+// ── Reset password ─────────────────────────────────────────────
+async function handleReset(e) {
+  e.preventDefault();
+  clearMessages();
+  const p1 = document.getElementById('reset-password').value;
+  const p2 = document.getElementById('reset-password2').value;
+  if (p1 !== p2) { showError('Las contraseñas no coinciden.'); return; }
+
+  setLoading('btn-reset', true, 'Guardando...');
+  const { error } = await sb.auth.updateUser({ password: p1 });
+  setLoading('btn-reset', false, 'Guardar nueva contraseña');
+
+  if (error) { showError(error.message); return; }
+
+  showSuccess('¡Contraseña actualizada! Ahora puedes iniciar sesión.');
+  setTimeout(() => {
+    document.querySelectorAll('.tab').forEach(t => t.style.display = '');
+    document.querySelector('.tabs').style.display = '';
+    showPanel('login');
+    document.querySelector('.card-title').textContent = 'Bienvenido de regreso';
+    window.history.replaceState(null, '', window.location.pathname);
+  }, 2000);
+}
+
+function showPanel(name) {
+  ['login', 'signup', 'reset'].forEach(p => {
+    document.getElementById('panel-' + p).classList.toggle('active', p === name);
+  });
+}
+
 // ── Si ya está autenticado, redirige directo ────────────────────
 (async () => {
+  // Detectar si viene del email de recuperación (Supabase pone type=recovery en el hash)
+  const hash = new URLSearchParams(window.location.hash.replace('#', ''));
+  if (hash.get('type') === 'recovery') {
+    document.querySelector('.tabs').style.display = 'none';
+    document.querySelector('.card-title').textContent = 'Nueva contraseña';
+    showPanel('reset');
+    return;
+  }
+
   const { data: { session } } = await sb.auth.getSession();
   if (session) { window.location.href = 'dashboard.html'; return; }
 
