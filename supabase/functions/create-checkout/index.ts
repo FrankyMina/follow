@@ -89,15 +89,7 @@ Deno.serve(async (req) => {
 
 async function stripeRequest(key: string, method: string, path: string, params: Record<string, unknown>) {
   const body = new URLSearchParams();
-  for (const [k, v] of Object.entries(params)) {
-    if (typeof v === 'object' && v !== null) {
-      for (const [sk, sv] of Object.entries(v as Record<string, unknown>)) {
-        body.append(`${k}[${sk}]`, String(sv));
-      }
-    } else {
-      body.append(k, String(v));
-    }
-  }
+  flattenParams(params, '', body);
   const res = await fetch(`https://api.stripe.com/v1${path}`, {
     method,
     headers: {
@@ -109,6 +101,18 @@ async function stripeRequest(key: string, method: string, path: string, params: 
   const data = await res.json();
   if (!res.ok) throw new Error(data.error?.message || JSON.stringify(data));
   return data;
+}
+
+function flattenParams(obj: unknown, prefix: string, result: URLSearchParams) {
+  if (Array.isArray(obj)) {
+    obj.forEach((item, i) => flattenParams(item, `${prefix}[${i}]`, result));
+  } else if (obj !== null && typeof obj === 'object') {
+    for (const [k, v] of Object.entries(obj as Record<string, unknown>)) {
+      flattenParams(v, prefix ? `${prefix}[${k}]` : k, result);
+    }
+  } else if (obj !== undefined && obj !== null) {
+    result.append(prefix, String(obj));
+  }
 }
 
 function json(data: unknown, status = 200) {
