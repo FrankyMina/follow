@@ -36,7 +36,7 @@ Deno.serve(async (req) => {
     const priceId = PRICE_IDS[plan?.toLowerCase()];
     if (!priceId) return json({ error: 'Plan inválido. Usa: basico, pro o profesional' }, 400);
 
-    const successUrl = `${Deno.env.get('SUPABASE_URL')?.replace('supabase.co', 'vercel.app') || 'https://follow-ruby.vercel.app'}/dashboard.html?payment=success`;
+    const successUrl = `https://follow-ruby.vercel.app/dashboard.html?payment=success`;
     const cancelUrl  = `https://follow-ruby.vercel.app/dashboard.html?payment=cancelled`;
 
     // Obtener o crear customer de Stripe
