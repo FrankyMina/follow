@@ -330,7 +330,7 @@ tbody tr:hover td { background: rgba(184,146,58,0.04); }
           </div>
           <div style="text-align:right;">
             <div style="font-weight:700;font-size:18px;">$499 <span style="font-size:13px;color:#666;">MXN/mes</span></div>
-            <button onclick="startCheckout('basico')" style="margin-top:8px;background:#1a1a2e;color:#fff;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">Elegir</button>
+            <button onclick="startCheckout('basico', this)" style="margin-top:8px;background:#1a1a2e;color:#fff;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">Elegir</button>
           </div>
         </div>
         <div style="border:2px solid #C9A84C;border-radius:12px;padding:20px;display:flex;justify-content:space-between;align-items:center;position:relative;">
@@ -341,7 +341,7 @@ tbody tr:hover td { background: rgba(184,146,58,0.04); }
           </div>
           <div style="text-align:right;">
             <div style="font-weight:700;font-size:18px;">$699 <span style="font-size:13px;color:#666;">MXN/mes</span></div>
-            <button onclick="startCheckout('pro')" style="margin-top:8px;background:#C9A84C;color:#fff;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">Elegir</button>
+            <button onclick="startCheckout('pro', this)" style="margin-top:8px;background:#C9A84C;color:#fff;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">Elegir</button>
           </div>
         </div>
         <div style="border:1px solid #e5e7eb;border-radius:12px;padding:20px;display:flex;justify-content:space-between;align-items:center;">
@@ -351,7 +351,7 @@ tbody tr:hover td { background: rgba(184,146,58,0.04); }
           </div>
           <div style="text-align:right;">
             <div style="font-weight:700;font-size:18px;">$1,900 <span style="font-size:13px;color:#666;">MXN/mes</span></div>
-            <button onclick="startCheckout('profesional')" style="margin-top:8px;background:#1a1a2e;color:#fff;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">Elegir</button>
+            <button onclick="startCheckout('profesional', this)" style="margin-top:8px;background:#1a1a2e;color:#fff;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">Elegir</button>
           </div>
         </div>
       </div>
@@ -718,11 +718,10 @@ function closePlanes() {
   document.getElementById('modal-planes').style.display = 'none';
 }
 
-async function startCheckout(plan) {
+async function startCheckout(plan, btn) {
   const { data: { session } } = await sb.auth.getSession();
   if (!session) { showToast('Sesión expirada, recarga la página.', 'err'); return; }
 
-  const btn = event.target;
   btn.disabled = true;
   btn.textContent = '...';
 
