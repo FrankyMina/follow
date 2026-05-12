@@ -964,6 +964,222 @@ async function handleLogout() {
   await sb.auth.signOut();
   window.location.href = 'login.html';
 }
+
+// ── Payment Success Animation ─────────────────────────────────────
+(function initPaymentSuccess() {
+  if (!window.location.search.includes('payment=success')) return;
+
+  // Load Playfair Display
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = 'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&display=swap';
+  document.head.appendChild(link);
+
+  // Inject styles
+  const style = document.createElement('style');
+  style.textContent = `
+    #pay-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(14, 14, 28, 0.96);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.6s ease;
+      cursor: pointer; backdrop-filter: blur(6px);
+    }
+    #pay-overlay.visible { opacity: 1; }
+    #pay-overlay.fadeout { opacity: 0; pointer-events: none; }
+
+    .pay-env-wrap {
+      position: relative;
+      animation: envLaunch 1.1s cubic-bezier(0.22, 1.4, 0.36, 1) 0.2s both;
+    }
+    @keyframes envLaunch {
+      0%   { transform: translateY(140px) rotate(-12deg) scale(0.4); opacity: 0; }
+      55%  { transform: translateY(-24px) rotate(6deg) scale(1.12); opacity: 1; }
+      75%  { transform: translateY(8px) rotate(-3deg) scale(0.97); }
+      100% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+    }
+
+    .pay-trail {
+      position: absolute; border-radius: 50%;
+      background: radial-gradient(circle, #C9A84C, transparent);
+      animation: trailFade 0.9s ease-out 0.2s both;
+      pointer-events: none;
+    }
+    @keyframes trailFade {
+      0%   { opacity: 0.8; transform: scaleY(1); }
+      100% { opacity: 0; transform: scaleY(3) translateY(40px); }
+    }
+
+    .pay-spark {
+      position: absolute; border-radius: 50%;
+      animation: sparkOut 0.7s ease-out forwards;
+    }
+    @keyframes sparkOut {
+      0%   { transform: translate(0,0) scale(1); opacity: 1; }
+      100% { transform: translate(var(--sx), var(--sy)) scale(0); opacity: 0; }
+    }
+
+    .pay-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(2.2rem, 7vw, 4.2rem);
+      color: #C9A84C; text-align: center;
+      margin: 28px 0 0; line-height: 1.1;
+      letter-spacing: -0.02em;
+      animation: payFadeUp 0.7s 1s both ease;
+    }
+    .pay-title em { font-style: italic; color: #fff; }
+    .pay-sub {
+      font-size: 15px; color: rgba(255,255,255,0.6);
+      text-align: center; margin-top: 14px;
+      max-width: 320px; line-height: 1.6;
+      animation: payFadeUp 0.7s 1.2s both ease;
+    }
+    .pay-hint {
+      margin-top: 36px; font-size: 11px;
+      color: rgba(255,255,255,0.2); letter-spacing: 0.08em;
+      text-transform: uppercase;
+      animation: payFadeUp 0.7s 1.8s both ease;
+    }
+    @keyframes payFadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .pay-ring {
+      position: absolute; border-radius: 50%;
+      border: 2px solid rgba(201, 168, 76, 0.3);
+      animation: ringExpand 1.4s ease-out 0.6s both;
+      pointer-events: none;
+    }
+    @keyframes ringExpand {
+      0%   { width: 80px; height: 80px; opacity: 0.8; }
+      100% { width: 260px; height: 260px; opacity: 0; }
+    }
+
+    .confetti-dot {
+      position: fixed; border-radius: 2px;
+      animation: confettiFall linear forwards;
+      pointer-events: none;
+    }
+    @keyframes confettiFall {
+      0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(var(--rot)); opacity: 0; }
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Build overlay
+  const overlay = document.createElement('div');
+  overlay.id = 'pay-overlay';
+  overlay.innerHTML = `
+    <div class="pay-env-wrap" id="pay-env">
+      <div class="pay-ring" style="top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+      <div class="pay-trail" style="width:60px;height:60px;bottom:-30px;left:50%;transform:translateX(-50%);"></div>
+      <svg width="148" height="112" viewBox="0 0 148 112" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Shadow -->
+        <ellipse cx="74" cy="108" rx="44" ry="5" fill="rgba(0,0,0,0.3)"/>
+        <!-- Letter inside -->
+        <rect x="34" y="6" width="80" height="56" rx="4" fill="white" opacity="0.95"/>
+        <rect x="44" y="18" width="60" height="2.5" rx="1.25" fill="#e2e8f0"/>
+        <rect x="44" y="26" width="60" height="2.5" rx="1.25" fill="#e2e8f0"/>
+        <rect x="44" y="34" width="44" height="2.5" rx="1.25" fill="#e2e8f0"/>
+        <rect x="44" y="42" width="52" height="2.5" rx="1.25" fill="#f0e6c8"/>
+        <!-- Envelope body -->
+        <rect x="6" y="36" width="136" height="70" rx="6" fill="#C9A84C"/>
+        <!-- Envelope shading -->
+        <rect x="6" y="36" width="136" height="70" rx="6" fill="url(#envGrad)"/>
+        <!-- Flap top -->
+        <path d="M6 36 L74 78 L142 36 Z" fill="#B8923C"/>
+        <!-- Bottom fold -->
+        <path d="M6 106 L74 70 L142 106 Z" fill="#A8822C" opacity="0.6"/>
+        <!-- Flap highlight -->
+        <path d="M6 36 L74 78 L142 36" stroke="rgba(255,255,255,0.15)" stroke-width="1" fill="none"/>
+        <!-- Shine -->
+        <ellipse cx="40" cy="50" rx="14" ry="6" fill="rgba(255,255,255,0.12)" transform="rotate(-15 40 50)"/>
+        <defs>
+          <linearGradient id="envGrad" x1="74" y1="36" x2="74" y2="106" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="rgba(255,255,255,0.08)"/>
+            <stop offset="1" stop-color="rgba(0,0,0,0.12)"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+    <div class="pay-title">¡<em>Muchas</em> gracias!</div>
+    <div class="pay-sub">Tu plan está activo. Empieza a enviar confirmaciones automáticas a tus clientes.</div>
+    <div class="pay-hint">Toca para continuar</div>
+  `;
+  document.body.appendChild(overlay);
+
+  // Spawn confetti
+  const colors = ['#C9A84C','#fff','#f59e0b','#fde68a','#a78bfa','#6ee7b7'];
+  function spawnConfetti() {
+    for (let i = 0; i < 55; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'confetti-dot';
+      const size = Math.random() * 8 + 4;
+      dot.style.cssText = `
+        left:${Math.random()*100}vw;
+        width:${size}px; height:${size * (Math.random() > 0.5 ? 1 : 2.5)}px;
+        background:${colors[Math.floor(Math.random()*colors.length)]};
+        --rot:${Math.random()*720 - 360}deg;
+        animation-duration:${Math.random()*2.5 + 1.8}s;
+        animation-delay:${Math.random()*0.8}s;
+        border-radius:${Math.random() > 0.5 ? '50%' : '2px'};
+        opacity:0.85;
+      `;
+      document.body.appendChild(dot);
+      setTimeout(() => dot.remove(), 5000);
+    }
+  }
+
+  // Spawn sparkles around envelope
+  function spawnSparks() {
+    const wrap = document.getElementById('pay-env');
+    const sparks = [
+      {sx:'-60px', sy:'-40px', color:'#fde68a', size:8},
+      {sx:'70px',  sy:'-50px', color:'#C9A84C', size:6},
+      {sx:'-70px', sy:'20px',  color:'#fff',    size:5},
+      {sx:'80px',  sy:'30px',  color:'#fde68a', size:7},
+      {sx:'0px',   sy:'-70px', color:'#C9A84C', size:6},
+      {sx:'-50px', sy:'60px',  color:'#fff',    size:5},
+      {sx:'60px',  sy:'-20px', color:'#fde68a', size:4},
+    ];
+    sparks.forEach(({sx, sy, color, size}, i) => {
+      const s = document.createElement('div');
+      s.className = 'pay-spark';
+      s.style.cssText = `
+        width:${size}px; height:${size}px;
+        background:${color};
+        top:50%; left:50%;
+        --sx:${sx}; --sy:${sy};
+        animation-delay:${0.6 + i * 0.07}s;
+        box-shadow: 0 0 6px ${color};
+      `;
+      wrap.appendChild(s);
+    });
+  }
+
+  // Show
+  requestAnimationFrame(() => {
+    overlay.classList.add('visible');
+    setTimeout(spawnConfetti, 400);
+    setTimeout(spawnSparks, 500);
+  });
+
+  // Auto-dismiss after 5s
+  const autoDismiss = setTimeout(dismiss, 5000);
+  overlay.addEventListener('click', () => { clearTimeout(autoDismiss); dismiss(); });
+
+  function dismiss() {
+    overlay.classList.add('fadeout');
+    setTimeout(() => {
+      overlay.remove();
+      // Clean URL
+      history.replaceState({}, '', window.location.pathname);
+    }, 700);
+  }
+})();
 </script>
 </body>
 </html>
