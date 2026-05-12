@@ -711,11 +711,22 @@ let parsedRows = [];
     document.getElementById('greeting-title').textContent = `Hola, ${name.split(' ')[0]} 👋`;
   }
 
-  const { data: prof } = await sb.from('professionals').select('id').eq('user_id', currentUser.id).single();
+  const { data: prof } = await sb.from('professionals').select('id, plan_status, trial_ends_at').eq('user_id', currentUser.id).single();
   if (prof) {
     professionalId = prof.id;
+    // Ocultar banner si el plan ya está activo
+    if (prof.plan_status === 'active') {
+      document.getElementById('trial-banner').style.display = 'none';
+    } else if (prof.plan_status === 'trial' && prof.trial_ends_at) {
+      const daysLeft = Math.ceil((new Date(prof.trial_ends_at) - new Date()) / 86400000);
+      if (daysLeft <= 0) {
+        document.getElementById('trial-banner').innerHTML =
+          '⚠️ Tu periodo de prueba <strong>ha vencido</strong>. Activa un plan para seguir usando Follow. &nbsp;·&nbsp; <button onclick="showPlanes()" style="background:var(--gold);color:#fff;border:none;padding:4px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;">Activar plan</button>';
+      } else {
+        document.getElementById('trial-banner').querySelector('strong').textContent = ` ${daysLeft} día${daysLeft !== 1 ? 's' : ''} `;
+      }
+    }
     showBookingLink(professionalId);
-    // En móvil arrancar en Citas, en desktop en Subir
     if (isMobile()) switchTab('citas');
     loadAll();
   }
@@ -1237,10 +1248,11 @@ function openNuevaCita() {
       });
   }
 
-  // Fecha/hora por defecto: ahora + 1 hora, redondeado a :00
+  // Fecha/hora por defecto: ahora + 1 hora en hora local
   const now = new Date();
   now.setHours(now.getHours() + 1, 0, 0, 0);
-  document.getElementById('nc-datetime').value = now.toISOString().slice(0, 16);
+  const localISO = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+  document.getElementById('nc-datetime').value = localISO;
   document.getElementById('nc-service').value = '';
   document.getElementById('nc-new-block').style.display = 'none';
 

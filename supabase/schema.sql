@@ -10,17 +10,19 @@ create extension if not exists "uuid-ossp";
 -- 1. PROFESSIONALS — usuarios que pagan Follow
 -- ──────────────────────────────────────────────────────────
 create table professionals (
-  id            uuid primary key default uuid_generate_v4(),
-  user_id       uuid references auth.users(id) on delete cascade,
-  name          text not null,
-  business_name text,
-  email         text not null,
-  whatsapp      text,
-  industry      text,                        -- medico, coach, abogado, estetica, etc.
-  plan          text default 'basico',       -- basico | pro | profesional
-  plan_status   text default 'trial',        -- trial | active | cancelled
-  trial_ends_at timestamptz default (now() + interval '14 days'),
-  created_at    timestamptz default now()
+  id                     uuid primary key default uuid_generate_v4(),
+  user_id                uuid references auth.users(id) on delete cascade,
+  name                   text not null,
+  business_name          text,
+  email                  text not null,
+  whatsapp               text,
+  industry               text,                        -- medico, coach, abogado, estetica, etc.
+  plan                   text default 'basico',       -- basico | pro | profesional
+  plan_status            text default 'trial',        -- trial | active | cancelled | past_due
+  trial_ends_at          timestamptz default (now() + interval '14 days'),
+  stripe_customer_id     text,
+  stripe_subscription_id text,
+  created_at             timestamptz default now()
 );
 
 -- Solo el profesional puede ver/editar su propio perfil
@@ -193,6 +195,34 @@ create index idx_messages_appointment on messages(appointment_id);
 create index idx_messages_status on messages(status);
 
 -- ──────────────────────────────────────────────────────────
+-- 8. TRIGGER — crea fila en professionals cuando se registra un usuario
+-- Sin esto, el dashboard queda en blanco para usuarios nuevos.
+-- ──────────────────────────────────────────────────────────
+
+create or replace function handle_new_user()
+returns trigger language plpgsql security definer as $$
+begin
+  insert into public.professionals (user_id, name, email)
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data->>'name', split_part(new.email, '@', 1)),
+    new.email
+  );
+  return new;
+end;
+$$;
+
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure handle_new_user();
+
+-- ──────────────────────────────────────────────────────────
+-- 9. COLUMNAS STRIPE (si ya corriste el schema antes, ejecuta solo esto)
+-- ──────────────────────────────────────────────────────────
+-- alter table professionals add column if not exists stripe_customer_id text;
+-- alter table professionals add column if not exists stripe_subscription_id text;
+
+-- ──────────────────────────────────────────────────────────
 -- Listo! Tablas creadas:
--- professionals, clients, appointments, messages, templates
+-- professionals, clients, appointments, messages, templates, booking_sessions
 -- ──────────────────────────────────────────────────────────

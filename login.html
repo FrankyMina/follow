@@ -394,7 +394,7 @@ function switchTab(tab) {
 // ── Mensajes ───────────────────────────────────────────────────
 function showError(text) {
   const el = document.getElementById('msg-error');
-  el.textContent = text;
+  el.innerHTML = text;
   el.classList.add('show');
   document.getElementById('msg-success').classList.remove('show');
 }
