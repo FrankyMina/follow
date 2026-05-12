@@ -271,6 +271,62 @@ tbody tr:hover td { background: rgba(184,146,58,0.04); }
 .toast-err { background: var(--red); }
 @keyframes toast-in { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
 
+/* ── Modal base ── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(20,19,15,0.55);
+  z-index: 1000; display: none; align-items: center; justify-content: center;
+  backdrop-filter: blur(3px);
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: var(--bg); border: 1px solid var(--divider-strong);
+  width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto;
+  animation: modal-in 0.18s ease;
+}
+@keyframes modal-in { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: none; } }
+.modal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px 16px; border-bottom: 1px solid var(--divider);
+}
+.modal-head h2 { font-family: 'Playfair Display', serif; font-size: 18px; letter-spacing: -0.01em; color: var(--ink-2); }
+.modal-close { background: none; border: none; font-size: 20px; color: var(--muted); cursor: pointer; line-height: 1; padding: 4px 8px; }
+.modal-close:hover { color: var(--fg); }
+.modal-body { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+.modal-foot { padding: 16px 24px; border-top: 1px solid var(--divider); display: flex; justify-content: flex-end; gap: 10px; }
+.field-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.field-input {
+  width: 100%; padding: 9px 12px; font-family: 'DM Sans', sans-serif; font-size: 13px;
+  color: var(--fg); background: var(--bg-card); border: 1px solid var(--divider-strong);
+  outline: none; transition: border-color 0.15s;
+}
+.field-input:focus { border-color: var(--gold); }
+.field-input option { background: var(--bg); }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.field-group { display: flex; flex-direction: column; }
+.field-divider { border: none; border-top: 1px solid var(--divider); margin: 4px 0; }
+.nc-new-block { display: flex; flex-direction: column; gap: 16px; padding: 14px; background: var(--gold-soft); border: 1px solid rgba(184,146,58,0.2); }
+
+/* ── Booking link card ── */
+.booking-card {
+  display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px;
+  background: var(--bg-card); border: 1px solid var(--divider-strong); margin-bottom: 20px;
+}
+.booking-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+.booking-info { flex: 1; min-width: 0; }
+.booking-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.booking-link-wrap { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
+.booking-link-text {
+  flex: 1; padding: 7px 10px; font-size: 11px; font-family: monospace;
+  color: var(--muted); background: var(--bg); border: 1px solid var(--divider-strong);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.btn-copy {
+  font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; white-space: nowrap;
+  color: var(--gold); background: var(--gold-soft); border: 1px solid rgba(184,146,58,0.25);
+  padding: 6px 12px; cursor: pointer; transition: opacity 0.15s;
+}
+.btn-copy:hover { opacity: 0.8; }
+
 /* ── Mensajes coming soon ── */
 .coming-card {
   text-align: center; padding: 64px 32px;
@@ -314,6 +370,60 @@ tbody tr:hover td { background: rgba(184,146,58,0.04); }
     Estás en tu período de prueba de <strong>&nbsp;14 días&nbsp;</strong>. Sin tarjeta requerida.
     &nbsp;·&nbsp;
     <button onclick="showPlanes()" style="background:var(--gold);color:#fff;border:none;padding:4px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;">Activar plan</button>
+  </div>
+
+  <!-- Modal: Nueva Cita -->
+  <div class="modal-overlay" id="modal-nueva-cita">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h2>Nueva cita</h2>
+        <button class="modal-close" onclick="closeNuevaCita()">×</button>
+      </div>
+      <div class="modal-body">
+
+        <div class="field-group">
+          <div class="field-label">Cliente</div>
+          <select class="field-input" id="nc-client-select" onchange="onClientSelectChange()">
+            <option value="">Cargando clientes…</option>
+          </select>
+        </div>
+
+        <div class="nc-new-block" id="nc-new-block" style="display:none">
+          <div class="field-group">
+            <div class="field-label">Nombre completo *</div>
+            <input class="field-input" type="text" id="nc-name" placeholder="Ej. Ana García">
+          </div>
+          <div class="field-row">
+            <div class="field-group">
+              <div class="field-label">Teléfono</div>
+              <input class="field-input" type="tel" id="nc-phone" placeholder="+521XXXXXXXXXX">
+            </div>
+            <div class="field-group">
+              <div class="field-label">Email</div>
+              <input class="field-input" type="email" id="nc-email" placeholder="correo@ejemplo.com">
+            </div>
+          </div>
+        </div>
+
+        <hr class="field-divider">
+
+        <div class="field-row">
+          <div class="field-group">
+            <div class="field-label">Fecha y hora *</div>
+            <input class="field-input" type="datetime-local" id="nc-datetime">
+          </div>
+          <div class="field-group">
+            <div class="field-label">Servicio</div>
+            <input class="field-input" type="text" id="nc-service" placeholder="Consulta, Corte…">
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-foot">
+        <button class="btn-secondary" onclick="closeNuevaCita()">Cancelar</button>
+        <button class="btn-primary" id="btn-save-cita" onclick="saveNuevaCita()">Guardar cita</button>
+      </div>
+    </div>
   </div>
 
   <!-- Modal de planes -->
@@ -467,14 +577,28 @@ tbody tr:hover td { background: rgba(184,146,58,0.04); }
 
   <!-- ── TAB: Citas ── -->
   <div class="tab-panel" id="tab-citas">
+
+    <div class="booking-card" id="booking-card" style="display:none">
+      <div class="booking-icon">🔗</div>
+      <div class="booking-info">
+        <div class="booking-label">Enlace de reserva WhatsApp</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px;">Comparte este link con tus clientes para que agenden directamente por WhatsApp.</div>
+        <div class="booking-link-wrap">
+          <div class="booking-link-text" id="booking-link-text">—</div>
+          <button class="btn-copy" onclick="copyBookingLink()">Copiar</button>
+        </div>
+      </div>
+    </div>
+
     <div class="table-header">
       <span class="table-title">Citas programadas</span>
+      <button class="btn-primary" style="font-size:12px;padding:8px 16px;" onclick="openNuevaCita()">+ Nueva cita</button>
     </div>
     <div id="citas-content">
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>Cliente</th><th>Fecha y hora</th><th>Servicio</th><th>Estatus</th><th>WhatsApp</th></tr>
+            <tr><th>Cliente</th><th>Fecha y hora</th><th>Servicio</th><th>Estatus</th><th>Acciones</th></tr>
           </thead>
           <tbody id="citas-tbody">
             <tr class="loading-row"><td colspan="5">Cargando...</td></tr>
@@ -529,6 +653,7 @@ let parsedRows = [];
   const { data: prof } = await sb.from('professionals').select('id').eq('user_id', currentUser.id).single();
   if (prof) {
     professionalId = prof.id;
+    showBookingLink(professionalId);
     loadAll();
   }
 })();
@@ -600,8 +725,11 @@ async function loadCitas() {
         <div class="empty-state">
           <div class="empty-icon">📅</div>
           <div class="empty-title">No hay citas registradas</div>
-          <div class="empty-sub">Las citas aparecen aquí cuando subes un archivo con fechas.</div>
-          <button class="btn-primary" onclick="switchTab('subir')">Subir lista</button>
+          <div class="empty-sub">Agenda una cita manualmente o sube un archivo con fechas.</div>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+            <button class="btn-primary" onclick="openNuevaCita()">+ Nueva cita</button>
+            <button class="btn-secondary" onclick="switchTab('subir')">Subir lista</button>
+          </div>
         </div>
       </td></tr>`;
     return;
@@ -963,6 +1091,122 @@ function hideErrors() {
 async function handleLogout() {
   await sb.auth.signOut();
   window.location.href = 'login.html';
+}
+
+// ── Nueva Cita ───────────────────────────────────────────────────
+// Número de WhatsApp de la plataforma Follow (Twilio) — configura según tu cuenta
+const BOOKING_PHONE = '14155238886'; // ← reemplazar con número Twilio real
+
+let clientesList = []; // cache para el select del modal
+
+function openNuevaCita() {
+  // Precargar clientes en el select
+  const sel = document.getElementById('nc-client-select');
+  if (clientesList.length > 0) {
+    populateClientSelect(sel);
+  } else {
+    sel.innerHTML = '<option value="">Cargando clientes…</option>';
+    sb.from('clients')
+      .select('id, name, phone')
+      .eq('professional_id', professionalId)
+      .order('name')
+      .then(({ data }) => {
+        clientesList = data || [];
+        populateClientSelect(sel);
+      });
+  }
+
+  // Fecha/hora por defecto: ahora + 1 hora, redondeado a :00
+  const now = new Date();
+  now.setHours(now.getHours() + 1, 0, 0, 0);
+  document.getElementById('nc-datetime').value = now.toISOString().slice(0, 16);
+  document.getElementById('nc-service').value = '';
+  document.getElementById('nc-new-block').style.display = 'none';
+
+  document.getElementById('modal-nueva-cita').classList.add('open');
+}
+
+function populateClientSelect(sel) {
+  const opts = clientesList.map(c =>
+    `<option value="${c.id}">${esc(c.name)}${c.phone ? ' · ' + esc(c.phone) : ''}</option>`
+  ).join('');
+  sel.innerHTML =
+    '<option value="">— Seleccionar cliente —</option>' +
+    opts +
+    '<option value="__new__">+ Nuevo cliente</option>';
+}
+
+function closeNuevaCita() {
+  document.getElementById('modal-nueva-cita').classList.remove('open');
+}
+
+function onClientSelectChange() {
+  const val = document.getElementById('nc-client-select').value;
+  document.getElementById('nc-new-block').style.display = val === '__new__' ? 'flex' : 'none';
+}
+
+async function saveNuevaCita() {
+  const btn = document.getElementById('btn-save-cita');
+  const sel = document.getElementById('nc-client-select');
+  const datetime = document.getElementById('nc-datetime').value;
+  const service = document.getElementById('nc-service').value.trim();
+
+  if (!datetime) { showToast('Selecciona fecha y hora', 'err'); return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Guardando…';
+
+  try {
+    let clientId = sel.value;
+
+    if (clientId === '__new__' || clientId === '') {
+      const name = document.getElementById('nc-name').value.trim();
+      if (!name) { showToast('El nombre del cliente es requerido', 'err'); btn.disabled = false; btn.textContent = 'Guardar cita'; return; }
+      const phone = document.getElementById('nc-phone').value.trim() || null;
+      const email = document.getElementById('nc-email').value.trim() || null;
+
+      const { data: newClient, error: cErr } = await sb
+        .from('clients')
+        .insert({ professional_id: professionalId, name, phone, email })
+        .select('id').single();
+
+      if (cErr) { showToast('Error al crear cliente: ' + cErr.message, 'err'); btn.disabled = false; btn.textContent = 'Guardar cita'; return; }
+      clientId = newClient.id;
+      clientesList = []; // invalidar cache
+    }
+
+    const { error: aErr } = await sb.from('appointments').insert({
+      professional_id: professionalId,
+      client_id: clientId,
+      scheduled_at: datetime + ':00',
+      service: service || null,
+      status: 'scheduled',
+      source: 'manual',
+    });
+
+    if (aErr) { showToast('Error al guardar cita: ' + aErr.message, 'err'); btn.disabled = false; btn.textContent = 'Guardar cita'; return; }
+
+    showToast('✅ Cita guardada correctamente', 'ok');
+    closeNuevaCita();
+    loadAll();
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Guardar cita';
+  }
+}
+
+// ── Booking link ──────────────────────────────────────────────────
+function showBookingLink(profId) {
+  const code = profId.replace(/-/g, '').slice(0, 12);
+  const link = `https://wa.me/${BOOKING_PHONE}?text=CITA-${code}`;
+  document.getElementById('booking-link-text').textContent = link;
+  document.getElementById('booking-link-text').dataset.url = link;
+  document.getElementById('booking-card').style.display = 'flex';
+}
+
+function copyBookingLink() {
+  const url = document.getElementById('booking-link-text').dataset.url;
+  navigator.clipboard.writeText(url).then(() => showToast('✅ Enlace copiado', 'ok'));
 }
 
 // ── Payment Success Animation ─────────────────────────────────────

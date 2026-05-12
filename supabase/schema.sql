@@ -162,6 +162,27 @@ true),
 true);
 
 -- ──────────────────────────────────────────────────────────
+-- 6b. BOOKING_SESSIONS — estado conversacional de agendamiento por WhatsApp
+-- Cada registro representa un cliente nuevo en medio del flujo de reserva.
+-- Pasos: name → service → date → time → (crea client+appointment y borra sesión)
+-- ──────────────────────────────────────────────────────────
+create table booking_sessions (
+  id              uuid primary key default uuid_generate_v4(),
+  phone           text not null,                         -- número del cliente (+521XXXXXXXXXX)
+  professional_id uuid references professionals(id) on delete cascade,
+  step            text not null default 'name',          -- name | service | date | time
+  data            jsonb default '{}',                    -- datos acumulados en el flujo
+  expires_at      timestamptz default (now() + interval '30 minutes'),
+  created_at      timestamptz default now()
+);
+
+-- Solo service_role accede a esta tabla (desde Edge Functions)
+alter table booking_sessions enable row level security;
+
+create index idx_booking_sessions_phone on booking_sessions(phone);
+create index idx_booking_sessions_expires on booking_sessions(expires_at);
+
+-- ──────────────────────────────────────────────────────────
 -- 7. ÍNDICES para performance
 -- ──────────────────────────────────────────────────────────
 create index idx_appointments_professional on appointments(professional_id);
