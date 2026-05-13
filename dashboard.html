@@ -327,20 +327,34 @@ tbody tr:hover td { background: rgba(184,146,58,0.04); }
 }
 .btn-copy:hover { opacity: 0.8; }
 
-/* ── Mensajes coming soon ── */
-.coming-card {
-  text-align: center; padding: 64px 32px;
-  background: var(--bg-card); border: 1px solid var(--divider-strong);
-  opacity: 0.7;
+/* ── Mensajes tab ── */
+.badge-sent   { background: var(--green-soft); color: var(--green); }
+.badge-failed { background: var(--red-soft);   color: var(--red); }
+
+.filters-bar {
+  display: flex; gap: 10px; align-items: center; margin-bottom: 16px; flex-wrap: wrap;
 }
-.coming-icon { font-size: 32px; margin-bottom: 12px; }
-.coming-title { font-size: 15px; font-weight: 600; color: var(--ink-2); margin-bottom: 6px; }
-.coming-sub { font-size: 13px; color: var(--muted); }
-.badge-soon {
-  display: inline-block; margin-top: 14px; font-size: 10px; font-weight: 600;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--gold); background: var(--gold-soft); padding: 4px 10px;
+.filter-select {
+  font-family: 'DM Sans', sans-serif; font-size: 12px;
+  color: var(--fg); background: var(--bg-card); border: 1px solid var(--divider-strong);
+  padding: 6px 10px; cursor: pointer; outline: none; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b6860' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+  padding-right: 28px;
 }
+.filter-select:focus { border-color: var(--gold); }
+
+.pagination-bar {
+  display: flex; align-items: center; gap: 12px; margin-top: 14px;
+  justify-content: flex-end; font-size: 12px; color: var(--muted);
+}
+.btn-page {
+  font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600;
+  color: var(--gold); background: var(--gold-soft); border: 1px solid rgba(184,146,58,0.25);
+  padding: 5px 12px; cursor: pointer; transition: opacity 0.15s;
+}
+.btn-page:hover { opacity: 0.8; }
+.btn-page:disabled { opacity: 0.35; cursor: default; }
 
 /* ── Cita cards (móvil) ── */
 .citas-cards { display: flex; flex-direction: column; gap: 10px; }
@@ -559,7 +573,9 @@ tbody tr:hover td { background: rgba(184,146,58,0.04); }
     <button class="tab-btn" data-tab="citas" onclick="switchTab('citas')">
       Citas <span class="tab-count" id="count-citas">0</span>
     </button>
-    <button class="tab-btn" data-tab="mensajes" onclick="switchTab('mensajes')">Mensajes</button>
+    <button class="tab-btn" data-tab="mensajes" onclick="switchTab('mensajes')">
+      Mensajes <span class="tab-count" id="count-mensajes">0</span>
+    </button>
   </div>
 
   <!-- ── TAB: Subir ── -->
@@ -671,11 +687,37 @@ tbody tr:hover td { background: rgba(184,146,58,0.04); }
 
   <!-- ── TAB: Mensajes ── -->
   <div class="tab-panel" id="tab-mensajes">
-    <div class="coming-card">
-      <div class="coming-icon">💬</div>
-      <div class="coming-title">Historial de mensajes</div>
-      <div class="coming-sub">Aquí verás todas las confirmaciones, recordatorios y seguimientos enviados a tus clientes por WhatsApp y Email.</div>
-      <span class="badge-soon">Próximamente</span>
+    <div class="table-header">
+      <span class="table-title">Historial de mensajes</span>
+    </div>
+    <div class="filters-bar">
+      <select class="filter-select" id="msg-filter-channel" onchange="onMsgFilterChange()">
+        <option value="">Todos los canales</option>
+        <option value="whatsapp">💬 WhatsApp</option>
+        <option value="email">📧 Email</option>
+      </select>
+      <select class="filter-select" id="msg-filter-status" onchange="onMsgFilterChange()">
+        <option value="">Todos los estados</option>
+        <option value="sent">Enviado</option>
+        <option value="failed">Fallido</option>
+      </select>
+    </div>
+    <div id="mensajes-content">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Cliente</th><th>Canal</th><th>Tipo</th><th>Mensaje</th><th>Estado</th><th>Fecha</th></tr>
+          </thead>
+          <tbody id="mensajes-tbody">
+            <tr class="loading-row"><td colspan="6" style="color:var(--muted-2);font-style:italic;">Cargando…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="pagination-bar" id="msg-pagination" style="display:none">
+      <button class="btn-page" id="btn-msg-prev" onclick="changeMsgPage(-1)" disabled>← Anterior</button>
+      <span id="msg-page-info"></span>
+      <button class="btn-page" id="btn-msg-next" onclick="changeMsgPage(1)">Siguiente →</button>
     </div>
   </div>
 
@@ -1027,6 +1069,94 @@ function switchTab(name) {
   });
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById(`tab-${name}`).classList.add('active');
+
+  if (name === 'mensajes' && !msgLoaded) loadMensajes();
+}
+
+// ── Mensajes ─────────────────────────────────────────────────────
+const MSG_PAGE_SIZE = 20;
+let msgPage = 0;
+let msgTotalCount = 0;
+let msgLoaded = false;
+
+function onMsgFilterChange() {
+  msgPage = 0;
+  loadMensajes();
+}
+
+function changeMsgPage(delta) {
+  msgPage += delta;
+  loadMensajes();
+}
+
+async function loadMensajes() {
+  if (!professionalId) return;
+
+  const tbody = document.getElementById('mensajes-tbody');
+  tbody.innerHTML = '<tr class="loading-row"><td colspan="6">Cargando…</td></tr>';
+
+  const channel = document.getElementById('msg-filter-channel').value;
+  const status  = document.getElementById('msg-filter-status').value;
+  const from    = msgPage * MSG_PAGE_SIZE;
+  const to      = from + MSG_PAGE_SIZE - 1;
+
+  let query = sb
+    .from('messages')
+    .select('id, channel, type, body, status, sent_at, clients(name)', { count: 'exact' })
+    .eq('professional_id', professionalId)
+    .order('sent_at', { ascending: false })
+    .range(from, to);
+
+  if (channel) query = query.eq('channel', channel);
+  if (status)  query = query.eq('status', status);
+
+  const { data, count, error } = await query;
+
+  msgTotalCount = count ?? 0;
+  msgLoaded = true;
+
+  // Update tab badge on unfiltered first load
+  if (msgPage === 0 && !channel && !status) {
+    document.getElementById('count-mensajes').textContent = msgTotalCount;
+  }
+
+  if (error || !data || data.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px 16px;color:var(--muted-2);font-style:italic;">
+      ${error ? 'Error al cargar mensajes.' : 'No hay mensajes que mostrar.'}
+    </td></tr>`;
+    document.getElementById('msg-pagination').style.display = 'none';
+    return;
+  }
+
+  const typeLabel    = { confirmation: 'Confirmación', reminder: 'Recordatorio', escalate: 'Seguimiento' };
+  const channelLabel = { whatsapp: '💬 WhatsApp', email: '📧 Email' };
+  const statusLabel  = { sent: 'Enviado', failed: 'Fallido' };
+
+  tbody.innerHTML = data.map(m => {
+    const body    = m.body || '';
+    const snippet = esc(body.slice(0, 60)) + (body.length > 60 ? '…' : '');
+    const client  = m.clients?.name ? `<strong>${esc(m.clients.name)}</strong>` : '<span class="td-muted">—</span>';
+    return `<tr>
+      <td>${client}</td>
+      <td>${channelLabel[m.channel] ?? esc(m.channel)}</td>
+      <td>${typeLabel[m.type] ?? esc(m.type)}</td>
+      <td style="max-width:220px;color:var(--muted)">${snippet || '<span class="td-muted">—</span>'}</td>
+      <td><span class="badge badge-${m.status}">${statusLabel[m.status] ?? esc(m.status)}</span></td>
+      <td><span class="td-muted">${formatDateShort(m.sent_at)}</span></td>
+    </tr>`;
+  }).join('');
+
+  // Pagination
+  const totalPages   = Math.ceil(msgTotalCount / MSG_PAGE_SIZE);
+  const paginationEl = document.getElementById('msg-pagination');
+  if (totalPages > 1) {
+    paginationEl.style.display = 'flex';
+    document.getElementById('msg-page-info').textContent = `Página ${msgPage + 1} de ${totalPages}`;
+    document.getElementById('btn-msg-prev').disabled = msgPage === 0;
+    document.getElementById('btn-msg-next').disabled = msgPage >= totalPages - 1;
+  } else {
+    paginationEl.style.display = 'none';
+  }
 }
 
 // ── Drag & drop ─────────────────────────────────────────────────
